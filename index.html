@@ -77,11 +77,23 @@
             </div>
         </section>
 
-        <section class="bg-white p-6 rounded-3xl shadow-md border border-gray-100">
-            <h2 class="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
-                <span>➕</span> Dagdag Menu
+        <!-- Toggle Buttons -->
+        <div class="flex justify-center gap-2 pb-4">
+            <button onclick="toggleAddMenu()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2">
+                <span id="toggle-icon">➕</span> <span id="toggle-text">Add Recipe</span>
+            </button>
+            <button onclick="toggleManageMenu()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2">
+                <span>📋</span> Manage List
+            </button>
+        </div>
+
+        <!-- Add Menu Section -->
+        <section id="add-menu-section" class="hidden bg-white p-6 rounded-3xl shadow-md border border-gray-100 pop-effect">
+            <h2 id="form-title" class="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
+                <span>📝</span> Bagong Recipe
             </h2>
             <form id="recipe-form" class="space-y-3">
+                <input type="hidden" id="edit-index" value="-1">
                 <input type="text" id="form-name" placeholder="Pangalan ng Ulam" class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none" required>
                 <div class="grid grid-cols-2 gap-2">
                     <select id="form-category" class="p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none">
@@ -89,11 +101,23 @@
                         <option value="Lunch">Lunch</option>
                         <option value="Dinner">Dinner</option>
                     </select>
-                    <button type="submit" class="bg-gray-900 text-white font-black py-4 rounded-2xl hover:bg-black transition">SAVE</button>
+                    <button type="submit" id="save-btn" class="bg-gray-900 text-white font-black py-4 rounded-2xl hover:bg-black transition text-sm text-center">SAVE</button>
                 </div>
-                <textarea id="form-ingredients" placeholder="Mga Sangkap..." class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none" rows="2"></textarea>
-                <textarea id="form-steps" placeholder="Paano lutuin?..." class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none" rows="2"></textarea>
+                <textarea id="form-ingredients" placeholder="Mga Sangkap..." class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs" rows="2"></textarea>
+                <textarea id="form-steps" placeholder="Paano lutuin?..." class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs" rows="2"></textarea>
+                <button type="button" id="cancel-edit" onclick="cancelEdit()" class="hidden w-full text-gray-400 text-[10px] font-bold uppercase tracking-widest pt-2">Cancel Edit</button>
             </form>
+        </section>
+
+        <!-- Manage List Section -->
+        <section id="manage-menu-section" class="hidden bg-white p-6 rounded-3xl shadow-md border border-gray-100 pop-effect">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-gray-800">Ulam List</h2>
+                <input type="text" id="search-bar" oninput="renderRecipeList()" placeholder="Search ulam..." class="text-xs p-2 bg-gray-50 rounded-xl ring-1 ring-gray-100 outline-none w-1/2">
+            </div>
+            <div id="recipe-list-container" class="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- List items injected here -->
+            </div>
         </section>
     </main>
 
@@ -312,6 +336,89 @@
         let selectionHistory = { Breakfast: [], Lunch: [], Dinner: [] };
         const HISTORY_LIMIT = 10; 
 
+        function toggleAddMenu() {
+            const section = document.getElementById('add-menu-section');
+            const icon = document.getElementById('toggle-icon');
+            const text = document.getElementById('toggle-text');
+            
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                icon.innerText = '➖';
+                text.innerText = 'Close Menu';
+            } else {
+                section.classList.add('hidden');
+                icon.innerText = '➕';
+                text.innerText = 'Magdagdag ng Ulam';
+            }
+        }
+
+        function toggleManageMenu() {
+            const section = document.getElementById('manage-menu-section');
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                renderRecipeList();
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        function renderRecipeList() {
+            const container = document.getElementById('recipe-list-container');
+            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+            container.innerHTML = '';
+
+            recipes.forEach((recipe, index) => {
+                if (recipe.name.toLowerCase().includes(searchTerm)) {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between items-center p-3 bg-gray-50 rounded-2xl border border-gray-100';
+                    item.innerHTML = `
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-800 text-sm">${recipe.name}</p>
+                            <p class="text-[10px] text-orange-500 font-bold uppercase tracking-widest">${recipe.category}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editRecipe(${index})" class="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition">✏️</button>
+                            <button onclick="deleteRecipe(${index})" class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition">🗑️</button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                }
+            });
+        }
+
+        function deleteRecipe(index) {
+            if (confirm(`Sigurado ka bang buburahin ang "${recipes[index].name}"?`)) {
+                recipes.splice(index, 1);
+                localStorage.setItem('myRecipes', JSON.stringify(recipes));
+                renderRecipeList();
+            }
+        }
+
+        function editRecipe(index) {
+            const recipe = recipes[index];
+            document.getElementById('form-title').innerText = "Edit Recipe ✏️";
+            document.getElementById('form-name').value = recipe.name;
+            document.getElementById('form-category').value = recipe.category;
+            document.getElementById('form-ingredients').value = recipe.ingredients;
+            document.getElementById('form-steps').value = recipe.steps;
+            document.getElementById('edit-index').value = index;
+            document.getElementById('save-btn').innerText = "UPDATE";
+            document.getElementById('cancel-edit').classList.remove('hidden');
+            
+            // Open form and close list
+            document.getElementById('add-menu-section').classList.remove('hidden');
+            document.getElementById('manage-menu-section').classList.add('hidden');
+            window.scrollTo({ top: document.getElementById('add-menu-section').offsetTop, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('recipe-form').reset();
+            document.getElementById('form-title').innerText = "Bagong Recipe 📝";
+            document.getElementById('edit-index').value = "-1";
+            document.getElementById('save-btn').innerText = "SAVE";
+            document.getElementById('cancel-edit').classList.add('hidden');
+        }
+
         function resetRecipes() {
             if(confirm("Gusto mo bang i-reset ang listahan sa default (180 Recipes)? Mabubura ang mga dinagdag mo.")) {
                 localStorage.removeItem('myRecipes');
@@ -385,16 +492,32 @@
 
         document.getElementById('recipe-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const newR = {
+            const editIndex = parseInt(document.getElementById('edit-index').value);
+            
+            const recipeData = {
                 name: document.getElementById('form-name').value,
                 category: document.getElementById('form-category').value,
                 ingredients: document.getElementById('form-ingredients').value,
                 steps: document.getElementById('form-steps').value
             };
-            recipes.push(newR);
+
+            if (editIndex === -1) {
+                // ADD NEW
+                recipes.push(recipeData);
+                alert("Saved! Jackpot!");
+            } else {
+                // UPDATE EXISTING
+                recipes[editIndex] = recipeData;
+                alert("Recipe updated!");
+            }
+
             localStorage.setItem('myRecipes', JSON.stringify(recipes));
-            alert("Saved! Jackpot!");
-            e.target.reset();
+            cancelEdit(); // Reset form and title
+            
+            // Refresh list if manage menu is open
+            if (!document.getElementById('manage-menu-section').classList.contains('hidden')) {
+                renderRecipeList();
+            }
         });
     </script>
 </body>
