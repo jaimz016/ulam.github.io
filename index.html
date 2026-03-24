@@ -40,13 +40,15 @@
         }
         .chip { transition: all 0.2s; cursor: pointer; }
         .chip.active { background-color: #ea580c !important; color: white !important; border-color: #ea580c !important; }
+        .pantry-item { animation: slideIn 0.2s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body class="pb-20">
 
     <header class="bg-orange-600 text-white p-6 text-center shadow-lg">
         <h1 class="text-3xl font-extrabold tracking-tighter">ULAM LOTTO 🎰</h1>
-        <p class="text-sm font-medium opacity-90 uppercase tracking-widest">Jackpot sa Gutom (200+ Recipes!)</p>
+        <p class="text-sm font-medium opacity-90 uppercase tracking-widest">Jackpot sa Gutom (100+ Recipes!)</p>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-6">
@@ -58,7 +60,25 @@
 
         <!-- LOTTO MACHINE -->
         <section class="bg-white p-8 rounded-[2.5rem] shadow-xl border-4 border-orange-100 text-center relative overflow-hidden">
-            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">Piliin ang Bola</h2>
+            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Magkano ang Budget?</h2>
+            
+            <div class="flex justify-center gap-2 mb-6">
+                <button onclick="setPriceFilter('All')" id="price-all" class="price-filter-btn active px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">All</button>
+                <button onclick="setPriceFilter('Budget')" id="price-budget" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Tipid 🪙</button>
+                <button onclick="setPriceFilter('Regular')" id="price-regular" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Sakto ⚖️</button>
+                <button onclick="setPriceFilter('Deluxe')" id="price-deluxe" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Mayaman 💎</button>
+            </div>
+
+            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Anong Klaseng Ulam?</h2>
+            <div class="flex flex-wrap justify-center gap-2 mb-6">
+                <button onclick="setTypeFilter('All')" id="type-all" class="type-filter-btn active px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Kahit ano</button>
+                <button onclick="setTypeFilter('Karne')" id="type-karne" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Karne 🥩</button>
+                <button onclick="setTypeFilter('Gulay')" id="type-gulay" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Gulay 🥗</button>
+                <button onclick="setTypeFilter('Sabaw')" id="type-sabaw" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">May Sabaw 🥣</button>
+                <button onclick="setTypeFilter('Prito')" id="type-prito" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Prito/Dry 🍳</button>
+            </div>
+
+            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Piliin ang Bola</h2>
             
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <button onclick="spin('Breakfast')" class="group bg-yellow-400 hover:bg-yellow-500 text-white p-4 rounded-2xl shadow-md transition active:scale-90">
@@ -74,6 +94,10 @@
                     <span class="text-[10px] font-black uppercase">Hapunan</span>
                 </button>
             </div>
+            
+            <button onclick="spin('All')" class="w-full mb-8 bg-gray-800 text-white p-4 rounded-2xl shadow-md transition active:scale-95 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                🎲 Surprise Me! (Any Meal)
+            </button>
 
             <div id="display-screen" class="bg-gray-900 rounded-3xl p-6 min-h-[160px] flex flex-col items-center justify-center border-8 border-gray-800 shadow-inner relative">
                 <div id="wheel-container">
@@ -88,11 +112,17 @@
             </div>
 
             <div id="recipe-details" class="hidden mt-6 text-left p-5 bg-orange-50 rounded-2xl border border-orange-200 pop-effect relative">
-                <button id="fav-toggle-btn" onclick="toggleFavoriteCurrent()" class="absolute top-4 right-4 text-2xl hover:scale-110 transition">🤍</button>
+                <div class="absolute top-4 right-4 flex items-center gap-3">
+                    <button id="quick-edit-btn" onclick="quickEditCurrent()" title="Edit Recipe" class="text-lg opacity-40 hover:opacity-100 hover:scale-110 transition">✏️</button>
+                    <button id="fav-toggle-btn" onclick="toggleFavoriteCurrent()" class="text-2xl hover:scale-110 transition">🤍</button>
+                </div>
                 <div class="space-y-3 text-sm text-gray-800 pr-8">
                     <div id="meal-tags-container" class="flex flex-wrap gap-1 mb-2"></div>
                     <p><strong>🛒 Sangkap:</strong> <span id="meal-ingredients" class="text-gray-600 text-xs italic"></span></p>
-                    <p><strong>👨‍🍳 Steps:</strong> <div id="meal-steps" class="text-gray-600 text-xs whitespace-pre-line leading-relaxed"></div></p>
+                    <div id="meal-steps-container">
+                        <strong>👨‍🍳 Steps:</strong>
+                        <div id="meal-steps" class="text-gray-600 text-xs whitespace-pre-line leading-relaxed mt-1"></div>
+                    </div>
                     <div id="recipe-link-container" class="pt-4 hidden">
                         <a id="meal-link" href="#" target="_blank" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition">View Full Recipe Online 🌐</a>
                     </div>
@@ -101,15 +131,18 @@
         </section>
 
         <!-- ACTION BUTTONS -->
-        <div class="flex flex-wrap justify-center gap-2 pb-4 relative z-10">
-            <button onclick="openModal('inventory-modal')" class="bg-orange-100 hover:bg-orange-200 text-orange-700 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2 shadow-sm active:scale-95">
-                <span>🧊</span> Ano'ng nasa Ref?
+        <div class="grid grid-cols-2 gap-2 pb-4 relative z-10">
+            <button onclick="openModal('inventory-modal')" class="bg-orange-100 hover:bg-orange-200 text-orange-700 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                <span class="text-2xl">🧊</span> Ano'ng nasa Ref?
             </button>
-            <button onclick="openModal('add-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2 shadow-sm active:scale-95">
-                <span>➕</span> Add Recipe
+            <button onclick="openModal('pantry-modal')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                <span class="text-2xl">📦</span> My Pantry
             </button>
-            <button onclick="openModal('manage-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2 shadow-sm active:scale-95">
-                <span>📋</span> Manage List
+            <button onclick="openModal('add-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                <span class="text-2xl">➕</span> Add Recipe
+            </button>
+            <button onclick="openModal('manage-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                <span class="text-2xl">📋</span> Manage List
             </button>
         </div>
 
@@ -118,16 +151,37 @@
     <!-- MODAL SYSTEM -->
     <div id="modal-backdrop" class="hidden fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
         
+        <!-- REF SEARCH MODAL -->
         <div id="inventory-modal" class="modal-content hidden bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative p-8 pop-effect">
             <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 text-2xl font-black">&times;</button>
             <h2 class="text-xl font-black mb-2 text-gray-800 flex items-center gap-2"><span>🔍</span> Ref Search</h2>
-            <p class="text-[10px] text-gray-500 mb-4 uppercase font-bold tracking-tight italic">Quick select or type ingredients</p>
+            
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-tight italic">Select ingredients to filter</p>
+                <button onclick="loadPantryToFilter()" class="bg-blue-500 text-white text-[9px] px-3 py-1 rounded-full font-black uppercase hover:bg-blue-600 transition">⚡ Use Pantry Items</button>
+            </div>
             
             <div id="ingredient-chips" class="flex flex-wrap gap-2 mb-4"></div>
 
             <div class="space-y-4">
-                <textarea id="inventory-input" placeholder="Ano ang meron ka? (e.g. egg, onion, pork)" class="w-full p-5 bg-orange-50 rounded-3xl border-none ring-1 ring-orange-100 focus:ring-2 focus:ring-orange-400 outline-none text-sm" rows="3"></textarea>
+                <textarea id="inventory-input" placeholder="Ingredients to search..." class="w-full p-5 bg-orange-50 rounded-3xl border-none ring-1 ring-orange-100 focus:ring-2 focus:ring-orange-400 outline-none text-sm" rows="3"></textarea>
                 <button onclick="spinByIngredients()" class="w-full bg-orange-500 text-white font-black py-5 rounded-3xl hover:bg-orange-600 transition shadow-xl shadow-orange-100">FILTER & SPIN 🎰</button>
+            </div>
+        </div>
+
+        <!-- PANTRY MODAL -->
+        <div id="pantry-modal" class="modal-content hidden bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative p-8 pop-effect">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 text-2xl font-black">&times;</button>
+            <h2 class="text-xl font-black mb-2 text-gray-800 flex items-center gap-2"><span>📦</span> My Pantry</h2>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase font-bold tracking-tight italic">List ingredients you currently have</p>
+            
+            <div class="flex gap-2 mb-6">
+                <input type="text" id="pantry-input" placeholder="e.g. Bawang" class="flex-1 p-4 bg-blue-50 rounded-2xl outline-none ring-1 ring-blue-100 focus:ring-2 focus:ring-blue-400 text-sm">
+                <button onclick="addToPantry()" class="bg-blue-600 text-white px-6 rounded-2xl font-black text-sm hover:bg-blue-700 transition">ADD</button>
+            </div>
+
+            <div id="pantry-list" class="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar">
+                <!-- Pantry items here -->
             </div>
         </div>
 
@@ -189,52 +243,143 @@
 
     <script>
         const starterRecipes = [
-            { name: "Tortang Talong", category: "Breakfast", ingredients: "Talong, Itlog, Asin, Gulay", steps: "1. Grill eggplant.\n2. Dip in beaten eggs.\n3. Pan-fry." },
-            { name: "Gisadong Corned Beef", category: "Breakfast", ingredients: "Corned Beef, Patatas, Sibuyas, Bawang", steps: "1. Sauté garlic/onion.\n2. Fry potatoes.\n3. Mix in corned beef." },
-            { name: "Sardines with Misua", category: "Lunch", ingredients: "Sardinas, Misua, Patola, Gulay, Bawang", steps: "1. Sauté sardinas.\n2. Add water/patola.\n3. Add misua." },
-            { name: "Adobong Sitaw w/ Baboy", category: "Lunch", ingredients: "Sitaw, Baboy, Toyo, Suka, Gulay", steps: "1. Sauté pork and sitaw.\n2. Season with adobo mix." },
-            { name: "Fried Galunggong", category: "Lunch", ingredients: "Galunggong, Isda, Asin", steps: "1. Salt and fry." },
-            { name: "Ginisang Monggo", category: "Lunch", ingredients: "Monggo, Gulay, Tinapa, Isda", steps: "1. Boil munggo.\n2. Sauté with greens and tinapa." },
-            { name: "Century Tuna Sisig", category: "Dinner", ingredients: "Tuna, Isda, Sibuyas, Mayo, Sili", steps: "1. Sauté onions and tuna.\n2. Mix mayo." },
-            { name: "Egg Drop Sopas", category: "Breakfast", ingredients: "Macaroni, Gatas, Itlog", steps: "1. Boil macaroni.\n2. Add milk and beaten egg." },
-            { name: "Scrambled Egg w/ Kamatis", category: "Breakfast", ingredients: "Itlog, Kamatis, Sibuyas, Gulay", steps: "1. Sauté tomatoes.\n2. Scramble with eggs." },
-            { name: "Ginisang Ampalaya", category: "Lunch", ingredients: "Ampalaya, Itlog, Kamatis, Gulay", steps: "1. Sauté ampalaya.\n2. Add eggs." },
-            { name: "Chicken & Potato Curry", category: "Lunch", ingredients: "Manok, Patatas, Gata, Gulay", steps: "1. Cook chicken/potatoes in curry gata." },
-            { name: "Pork Sinigang w/ Gulay", category: "Dinner", ingredients: "Baboy, Sinigang Mix, Sitaw, Talong, Gulay", steps: "1. Classic sour pork soup." },
-            { name: "Nilagang Baka", category: "Dinner", ingredients: "Baka, Patatas, Repolyo, Gulay", steps: "1. Boil beef until tender." },
-            { name: "Buttered Shrimp", category: "Dinner", ingredients: "Shrimp, Isda, Butter, Garlic", steps: "1. Sauté shrimp in butter." },
-            { name: "Beef Bistek", category: "Dinner", ingredients: "Beef, Toyo, Calamansi, Sibuyas, Baka", steps: "1. Cook marinated beef." },
-            { name: "Pork & Potato Adobo", category: "Lunch", ingredients: "Baboy, Patatas, Toyo, Suka", steps: "Classic adobo with soft potatoes." },
-            { name: "Sardinas w/ Itlog", category: "Breakfast", ingredients: "Sardinas, Itlog, Sibuyas", steps: "Scrambled eggs with sardines." },
-            { name: "Isda w/ Kamatis & Itlog", category: "Lunch", ingredients: "Isda, Kamatis, Itlog, Sibuyas", steps: "Cardillo style fish stew." },
-            { name: "Manok w/ Patatas & Kamatis", category: "Lunch", ingredients: "Manok, Patatas, Kamatis, Gulay", steps: "Chicken afritada style." },
-            { name: "Corned Beef w/ Itlog", category: "Breakfast", ingredients: "Corned Beef, Itlog, Sibuyas", steps: "Sautéed corned beef with egg." },
-            { name: "Ginisang Sitaw w/ Itlog", category: "Lunch", ingredients: "Sitaw, Itlog, Gulay", steps: "Affordable veg and egg sauté." },
-            { name: "Baboy w/ Talong & Bagoong", category: "Dinner", ingredients: "Baboy, Talong, Gulay, Sibuyas", steps: "Pork binagoongan with eggplant." },
-            { name: "Isda Sinigang w/ Sitaw", category: "Lunch", ingredients: "Isda, Sitaw, Gulay", steps: "Sour fish soup with string beans." },
-            { name: "Beef w/ Broccoli & Gulay", category: "Dinner", ingredients: "Baka, Gulay, Sibuyas, Bawang", steps: "Beef stir fry with greens." },
-            { name: "Tuna w/ Patatas Omelette", category: "Breakfast", ingredients: "Tuna, Itlog, Patatas", steps: "Hearty morning omelette." },
-            { name: "Baboy & Sitaw Adobo", category: "Dinner", ingredients: "Baboy, Sitaw, Gulay", steps: "Pork and veg adobo." },
-            { name: "Manok Tinola w/ Gulay", category: "Dinner", ingredients: "Manok, Gulay, Luya", steps: "Healthy ginger chicken soup." },
-            { name: "Isda Steak w/ Sibuyas", category: "Lunch", ingredients: "Isda, Sibuyas, Toyo", steps: "Fried fish with onion glaze." },
-            { name: "Gisadong Patatas w/ Itlog", category: "Breakfast", ingredients: "Patatas, Itlog, Sibuyas", steps: "Budget potato and egg mash." },
-            { name: "Corned Beef w/ Kamatis", category: "Breakfast", ingredients: "Corned Beef, Kamatis, Sibuyas", steps: "Juicy sautéed corned beef." },
-            { name: "Baboy Nilaga w/ Patatas", category: "Dinner", ingredients: "Baboy, Patatas, Gulay", steps: "Boiled pork with potatoes." },
-            { name: "Isda w/ Talong (Fried)", category: "Lunch", ingredients: "Isda, Talong, Gulay", steps: "Fried fish paired with eggplant." },
-            { name: "Tuna w/ Kamatis Pasta", category: "Dinner", ingredients: "Tuna, Kamatis, Sibuyas", steps: "Quick tomato-tuna pasta." },
-            { name: "Chicken Adobo w/ Itlog", category: "Lunch", ingredients: "Manok, Itlog, Toyo", steps: "Chicken adobo with boiled eggs." },
-            { name: "Tortang Corned Beef", category: "Breakfast", ingredients: "Corned Beef, Itlog, Patatas", steps: "Potato and corned beef omelette." }
+            // BUDGET (TIPID) - Detailed
+            { name: "Tortang Talong", category: "Breakfast", price: "Budget", type: "Gulay", ingredients: "2 Talong, 2 Itlog, Asin/Paminta, Mantika", steps: "1. Ihawin ang talong sa direktang apoy hanggang lumambot ang loob at mangitim ang balat.\n2. Palamigin sandali at balatan ang talong (huwag isama ang sunog na balat).\n3. Batiin ang itlog sa isang malapad na mangkok, timplahan ng asin at paminta.\n4. I-flat ang talong gamit ang tinidor at ilubog sa binating itlog.\n5. Iprito sa mainit na mantika hanggang mag-golden brown ang magkabilang panig." },
+            { name: "Sardinas w/ Misua", category: "Lunch", price: "Budget", type: "Sabaw", ingredients: "1 lata Sardinas, 1 balot Misua, Patola, Bawang, Sibuyas", steps: "1. Igisa ang tinadtad na bawang at sibuyas hanggang bumango.\n2. Ibuhos ang sardinas (isama ang sauce) at sangkutsahin ng 1 minuto.\n3. Magdagdag ng 2-3 basong tubig at pakuluin.\n4. Ilagay ang hiniwang patola at lutuin hanggang lumambot ang gulay.\n5. Huling ilagay ang misua. Lutuin ng 1-2 minuto lang para hindi lumapot masyado ang sabaw." },
+            { name: "Gisadong Monggo", category: "Lunch", price: "Budget", type: "Sabaw", ingredients: "1 cup Monggo, Malunggay, Tinapa bits, Bawang, Sibuyas", steps: "1. Pakuluin ang monggo sa maraming tubig hanggang pumutok at lumambot ang mga butil.\n2. Sa hiwalay na kawali, igisa ang bawang, sibuyas, at tinapa bits (o sahog na baboy).\n3. Ihalo ang pinalambot na monggo kasama ang sabaw nito sa ginisang rekado.\n4. Timplahan ng patis ayon sa panlasa at pakuluin.\n5. Huling ilagay ang malunggay o spinach. Patayin agad ang apoy para manatiling berde ang dahon." },
+            { name: "Chicken Adobo", category: "Lunch", price: "Regular", type: "Karne", ingredients: "1/2kg Manok, 1/4 cup Toyo, 1/8 cup Suka, Bawang, Paminta, Laurel", steps: "1. I-marinate ang manok sa toyo at tinadtad na bawang ng 30 minuto.\n2. Igisa ang bawang hanggang mag-brown, isunod ang manok.\n3. Sangkutsahin ang manok hanggang lumabas ang sariling mantika nito.\n4. Ibuhos ang marinade, dahon ng laurel, at paminta. Pakuluin.\n5. Ibuhos ang suka. HUWAG HALUIN hanggang hindi kumukulo para hindi maging maasim ang lasa ng suka.\n6. Pakuluin sa mahinang apoy hanggang lumapot ang sauce at lumambot ang karne." },
+            { name: "Pork Sinigang", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "1/2kg Baboy, Sinigang Mix, Labanos, Sitaw, Kangkong, Kamatis", steps: "1. Pakuluin ang baboy sa tubig kasama ang hiniwang kamatis at sibuyas hanggang lumambot ang karne.\n2. Ilagay ang labanos at sitaw. Lutuin ng 3-5 minuto.\n3. Ibuhos ang sinigang mix (adjust sa asim na gusto mo).\n4. Ilagay ang sili at kangkong sa huli.\n5. Patayin ang apoy at takpan ng 2 minuto bago ihain para maluto ang kangkong sa init ng sabaw." },
+            { name: "Gisadong Pechay", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Pechay, Bawang, Patis", steps: "1. Igisa ang maraming bawang sa mainit na mantika hanggang maging golden brown.\n2. Ilagay ang mga tangkay ng pechay dahil mas matagal itong lumambot kaysa sa dahon.\n3. Isunod ang mga dahon at lagyan ng konting patis o oyster sauce.\n4. Mabilis lang lutuin (mga 2-3 mins) para manatiling crunchy at masustansya." },
+            { name: "Fried Galunggong", category: "Lunch", price: "Budget", type: "Prito", ingredients: "Galunggong, Asin, Mantika", steps: "1. Linisin ang isda at alisin ang hasang at lamang-loob.\n2. Pahiran ng sapat na asin ang bawat isda (loob at labas).\n3. Painitin ang kawali at lagyan ng sapat na mantika para lumubog ang kalahati ng isda.\n4. Iprito ang isda sa medium heat hanggang maging crispy ang balat bago baligtarin." },
+            { name: "Beef Kare-Kare", category: "Dinner", price: "Deluxe", type: "Karne", ingredients: "Baka, Peanut Butter, Bagoong, Puso ng Saging, Talong, Sitaw", steps: "1. Pakuluin ang baka hanggang lumambot nang husto (mga 2 oras sa regular pot).\n2. I-halo ang peanut butter o giniling na mani sa sabaw ng baka hanggang matunaw.\n3. Gumamit ng atsuete water (binabad na buto) para sa kulay-orange na sauce.\n4. Ilagay ang gulay (sitaw, talong, puso ng saging) at lutuin hanggang lumambot.\n5. Ihain nang mainit kasama ang ginisang bagoong alamang sa gilid." },
+            { name: "Garlic Butter Shrimp", category: "Lunch", price: "Deluxe", type: "Prito", ingredients: "Shrimp, Butter, Garlic, Sprite/7-up", steps: "1. Ibabad ang hipon sa Sprite ng 15-20 minuto (pampasarap at pampatamis ito).\n2. Tunawin ang maraming butter sa kawali sa mahinang apoy.\n3. Igisa ang maraming tinadtad na bawang hanggang bumango (huwag sunugin).\n4. Ilagay ang hipon. Lutuin hanggang maging matingkad na orange (mga 3-5 mins lang para hindi tumigas).\n5. Timplahan ng asin at paminta sa huli." },
+            { name: "Beef Bulalo", category: "Dinner", price: "Deluxe", type: "Sabaw", ingredients: "Beef Shank, Mais, Repolyo, Pechay, Paminta", steps: "1. Pakuluin ang beef shank sa maraming tubig nang matagal (3-4 na oras) hanggang lumambot ang litid.\n2. Mahalaga: Alisin ang mga namumuong dumi (scum) sa ibabaw ng tubig para maging malinaw ang sabaw.\n3. Ilagay ang mais at pakuluin ng 10-15 minuto.\n4. Timplahan ng asin at pamintang buo.\n5. Huling ilagay ang repolyo at pechay. Huwag i-overcook ang gulay." },
+            
+            // Adding general recipes with improved steps
+            { name: "Lucky Me w/ Itlog", category: "Breakfast", price: "Budget", type: "Sabaw", ingredients: "Instant Noodles, Itlog", steps: "1. Pakuluin ang tubig at ilagay ang noodles.\n2. Pag luto na ang noodles, ihalo ang seasonings.\n3. Batiin ang itlog at ibuhos habang kumukulo pa ang sabaw. Haluin nang mabilis para maging malapot at creamy." },
+            { name: "Lugaw w/ Egg", category: "Breakfast", price: "Budget", type: "Sabaw", ingredients: "Bigas, Itlog, Luya, Bawang", steps: "1. Igisa ang tinadtad na luya at bawang.\n2. Ihalo ang bigas at lagyan ng maraming tubig (ratio is 1:5).\n3. Haluin nang madalas para hindi dumikit sa ilalim at lumabas ang starch.\n4. Ihain kasama ang nilagang itlog, calamansi, at patis." },
+            { name: "Gisadong Sayote", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Sayote, Bawang, Sibuyas", steps: "1. Igisa ang bawang at sibuyas.\n2. Ilagay ang sayote slices at konting tubig.\n3. Takpan at lutuin hanggang maging translucent o malambot na ang sayote.\n4. Timplahan ng asin o patis." },
+            { name: "Adobong Kangkong", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Kangkong, Toyo, Suka, Bawang", steps: "1. Igisa ang maraming bawang hanggang mag-brown.\n2. Ilagay ang tangkay ng kangkong, isunod ang dahon.\n3. Lagyan ng toyo at paminta.\n4. Ibuhos ang suka sa huli at huwag haluin hanggang kumulo." },
+            { name: "Fried Tokwa", category: "Dinner", price: "Budget", type: "Prito", ingredients: "Tokwa, Toyo, Suka", steps: "1. Hiwain ang tokwa sa cubes.\n2. Iprito sa mainit na mantika hanggang maging crispy ang bawat gilid.\n3. Gumawa ng dip: Toyo, suka, asukal, sili, at tinadtad na sibuyas." },
+            { name: "Champorado", category: "Breakfast", price: "Budget", type: "Sabaw", ingredients: "Malagkit na bigas, Cocoa powder, Asukal", steps: "1. Pakuluin ang malagkit na kanin sa tubig hanggang lumambot.\n2. Ihalo ang cocoa powder o tinunaw na tablea.\n3. Dagdagan ng asukal ayon sa iyong tamis.\n4. Ihain na may gatas at pritong tuyo para sa classic combo." },
+            { name: "Ginisang Ampalaya", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Ampalaya, Itlog, Kamatis", steps: "1. Hiwain ang ampalaya at ibabad sa tubig na may asin (pigain ito para mawala ang sobrang pait).\n2. Igisa ang bawang, sibuyas, at maraming kamatis.\n3. Ihalo ang ampalaya. Huwag masyadong haluin.\n4. Ibuhos ang binating itlog sa ibabaw at hayaan maluto bago hanguin." },
+            { name: "Century Tuna Sisig", category: "Dinner", price: "Budget", type: "Prito", ingredients: "Canned Tuna, Sibuyas, Mayo, Sili", steps: "1. Salain ang sabaw o oil ng tuna.\n2. I-prito ang tuna sa kawali hanggang medyo matuyo ang texture.\n3. Ihalo ang maraming tinadtad na sibuyas at sili.\n4. Patayin ang apoy at ihalo ang mayonnaise at konting calamansi." },
+            { name: "Sopas (Budget)", category: "Breakfast", price: "Budget", type: "Sabaw", ingredients: "Macaroni, Milk, Hotdog", steps: "1. Igisa ang hotdog, bawang, at sibuyas.\n2. Ilagay ang macaroni at tubig. Pakuluin hanggang lumambot ang pasta.\n3. Ibuhos ang evaporated milk. Timplahan ng asin at paminta.\n4. Haluin nang maigi para hindi mamuo ang gatas." },
+            { name: "Binagoongang Talong", category: "Dinner", price: "Budget", type: "Gulay", ingredients: "Talong, Bagoong Alamang", steps: "1. Iprito muna ang hiniwang talong hanggang lumambot.\n2. Sa hiwalay na kawali, igisa ang bawang, sibuyas, at bagoong alamang.\n3. Ibalik ang pritong talong sa kawali at haluin nang dahan-dahan.\n4. Mas masarap kung may konting asukal at sili." },
+            { name: "Chicken Curry", category: "Lunch", price: "Regular", type: "Sabaw", ingredients: "Manok, Gata, Curry Powder, Patatas", steps: "1. Igisa ang manok sa bawang, sibuyas, at luya hanggang mag-brown.\n2. Ihalo ang curry powder at sangkutsahin nang sandali.\n3. Ibuhos ang gata (coconut milk) at pakuluin.\n4. Ilagay ang patatas at carrots. Lutuin sa mahinang apoy hanggang lumapot ang sauce." },
+            { name: "Pork Menudo", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Baboy, Liver, Tomato Sauce, Patatas", steps: "1. Igisa ang baboy hanggang mag-mantika.\n2. Ihalo ang tomato sauce, liver spread, at konting tubig.\n3. Ilagay ang maliliit na squares ng patatas at carrots.\n4. Simmer hanggang lumambot ang karne at gulay." },
+            { name: "Beef Bistek", category: "Lunch", price: "Regular", type: "Karne", ingredients: "Baka, Sibuyas, Toyo, Calamansi", steps: "1. I-marinate ang baka sa toyo at calamansi ng 1 oras.\n2. Iprito ang baka nang mabilis (huwag patagalin para hindi tumigas).\n3. Sa parehong kawali, igisa ang maraming onion rings.\n4. Ibuhos ang marinade at pakuluin hanggang lumapot." },
+            { name: "Chicken Tinola", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "Manok, Sayote, Luya, Malunggay", steps: "1. Igisa ang maraming luya (ito ang sikreto), bawang, at sibuyas.\n2. Ihalo ang manok at lagyan ng patis.\n3. Lagyan ng sapat na tubig at pakuluin hanggang lumambot ang manok.\n4. Ilagay ang sayote o papaya.\n5. Huling ilagay ang dahon ng malunggay o sili." },
+            { name: "Pork Bicol Express", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "Baboy, Gata, Sili, Bagoong", steps: "1. Igisa ang baboy sa bagoong alamang hanggang mag-brown.\n2. Ibuhos ang unang piga ng gata.\n3. Lagyan ng napakaraming sili para sa tunay na anghang.\n4. Lutuin hanggang mag-mantika ang gata at maging malapot ang sauce." },
+            { name: "Beef Caldereta", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Baka, Liver Spread, Cheese, Tomato Sauce", steps: "1. Pakuluin ang baka hanggang lumambot.\n2. Igisa sa tomato sauce, liver spread, at pampalasa.\n3. Lagyan ng cheese para sa creamy texture.\n4. Ihalo ang bell peppers at olives bago hanguin." },
+            { name: "Chicken Carbonara", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Manok, Cream, Pasta, Mushroom", steps: "1. Pakuluin ang pasta sa tubig na may asin.\n2. Igisa ang manok at mushroom sa butter.\n3. Ibuhos ang all-purpose cream at lagyan ng maraming cheese.\n4. I-halo ang pasta sa sauce bago ihain." },
+            { name: "Pork Tonkatsu", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Pork Chop, Breadcrumbs, Itlog", steps: "1. Dikdikin nang kaunti ang pork chop para lumambot.\n2. I-coat sa flour, isawsaw sa binating itlog, at balutin sa breadcrumbs.\n3. Iprito sa mainit na mantika hanggang maging golden brown." },
+            { name: "Crispy Pata", category: "Dinner", price: "Deluxe", type: "Prito", ingredients: "Pork Knuckles, Pampalasa", steps: "1. Pakuluin ang pork knuckles sa tubig na may laurel, paminta, at asin hanggang lumambot ang litid.\n2. Patuyuin nang husto ang balat (air dry o punasan).\n3. I-deep fry sa napakainit na mantika hanggang maging super crispy ang balat (ingat sa talsik!)." },
+            { name: "Lechon Kawali", category: "Lunch", price: "Deluxe", type: "Prito", ingredients: "Pork Belly, Asin", steps: "1. Pakuluin ang belly hanggang lumambot.\n2. Tusuk-tusukan ang balat gamit ang tinidor at pahiran ng asin.\n3. Iprito sa mainit na mantika hanggang pumutok-putok ang balat at maging malutong." },
+            { name: "Pinakbet", category: "Lunch", price: "Regular", type: "Gulay", ingredients: "Kalabasa, Sitaw, Ampalaya, Talong, Bagoong Alamang, Pork bits", steps: "1. Igisa ang bawang, sibuyas, at kamatis.\n2. Ihalo ang baboy at bagoong alamang.\n3. Ilagay ang kalabasa at sitaw. Magdagdag ng konting tubig.\n4. Huling ilagay ang ampalaya at talong. Lutuin hanggang lumambot ang lahat ng gulay." },
+            { name: "Lumpia Shanghai", category: "Dinner", price: "Regular", type: "Prito", ingredients: "Ground Pork, Carrots, Onion, Lumpia Wrapper", steps: "1. Paghaluin ang ground pork, tinadtad na carrots, at sibuyas. Timplahan ng asin at paminta.\n2. Balutin ang mixture sa lumpia wrapper.\n3. Iprito sa mainit na mantika hanggang maging golden brown at crispy." },
+            { name: "Nilagang Baka", category: "Dinner", price: "Deluxe", type: "Sabaw", ingredients: "Beef, Repolyo, Patatas, Saging na Saba, Pechay", steps: "1. Pakuluin ang baka sa tubig na may sibuyas at pamintang buo hanggang lumambot.\n2. Ilagay ang patatas at saging na saba.\n3. Kapag malambot na ang lahat, ilagay ang repolyo at pechay.\n4. Timplahan ng patis ayon sa panlasa." },
+            { name: "Daing na Bangus", category: "Breakfast", price: "Regular", type: "Prito", ingredients: "Bangus, Suka, Bawang, Paminta", steps: "1. Ibabad ang bangus sa suka, tinadtad na bawang, at paminta ng magdamag.\n2. Iprito sa mainit na mantika hanggang maging crispy ang balat at laman." },
+            { name: "Ginisang Togue", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Togue, Tokwa, Carrots, Bawang", steps: "1. Iprito ang tokwa cubes hanggang mag-brown.\n2. Igisa ang bawang at sibuyas. Ihalo ang carrots at togue.\n3. Ibalik ang pritong tokwa at timplahan ng oyster sauce o patis.\n4. Huwag i-overcook para manatiling crunchy ang togue." },
+            { name: "Embutido", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Ground Pork, Raisins, Cheese, Itlog, Carrots", steps: "1. Paghaluin ang lahat ng sangkap sa isang bowl.\n2. Ibalot sa foil at i-roll nang mahigpit.\n3. I-steam ng 45-60 minuto.\n4. Palamigin bago hiwain at iprito kung gusto ng crispy texture." },
+            { name: "Sinigang na Isda", category: "Lunch", price: "Regular", type: "Sabaw", ingredients: "Bangus o Lapu-lapu, Sinigang Mix, Mustasa, Labanos, Kamatis", steps: "1. Pakuluin ang tubig na may kamatis, sibuyas, at labanos.\n2. Ilagay ang isda at sinigang mix.\n3. Huling ilagay ang mustasa o kangkong.\n4. Lutuin nang mabilis para hindi madurog ang isda." },
+            { name: "Dinuguan", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "Pork, Pig's Blood, Suka, Sili haba", steps: "1. Igisa ang baboy sa bawang, sibuyas, at luya.\n2. Ibuhos ang suka at huwag haluin hanggang kumulo.\n3. Ibuhos ang dugo ng baboy habang hinahalo nang maigi para hindi mamuo.\n4. Ilagay ang sili at pakuluin hanggang lumapot ang sauce." },
+            { name: "Fried Chicken (Pinoy Style)", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Chicken, Flour, Calamansi, Toyo", steps: "1. I-marinate ang manok sa calamansi at toyo.\n2. I-coat sa tinimplahang harina.\n3. I-deep fry hanggang maging golden brown at luto ang loob." },
+            { name: "Pork Chop (Prito)", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Pork Chop, Asin, Paminta, Calamansi", steps: "1. Timplahan ang pork chop ng asin, paminta, at calamansi.\n2. Iprito sa mainit na mantika hanggang maluto ang magkabilang panig." }
         ];
 
-        // Core Logic
+        // Persistence Logic
         let recipes = JSON.parse(localStorage.getItem('myRecipes')) || starterRecipes;
+        
+        // Sync missing starter recipes (for updates)
+        starterRecipes.forEach(sr => {
+            if (!recipes.some(r => r.name === sr.name)) {
+                recipes.push(sr);
+            }
+        });
+        localStorage.setItem('myRecipes', JSON.stringify(recipes));
+        
+        // AUTO-TAGGING & LOGIC UPGRADE
+        recipes = recipes.map(r => {
+            if (!r.type) {
+                const n = r.name.toLowerCase();
+                if (n.includes('sinigang') || n.includes('nilaga') || n.includes('mami') || n.includes('sopas') || n.includes('tinola') || n.includes('monggo') || n.includes('pares') || n.includes('sabaw') || n.includes('lugaw') || n.includes('champorado')) r.type = 'Sabaw';
+                else if (n.includes('fried') || n.includes('prito') || n.includes('shrimp') || n.includes('torta') || n.includes('sisig') || n.includes('steak') || n.includes('pata') || n.includes('kawali') || n.includes('hotdog') || n.includes('omelette') || n.includes('daing') || n.includes('tonkatsu') || n.includes('carbonara')) r.type = 'Prito';
+                else if (n.includes('gulay') || n.includes('sayote') || n.includes('ampalaya') || n.includes('kangkong') || n.includes('sitaw') || n.includes('pechay') || n.includes('talong') || n.includes('beans') || n.includes('toge')) r.type = 'Gulay';
+                else r.type = 'Karne';
+            }
+            if (!r.price) {
+                r.price = 'Regular'; // Default for safety
+            }
+            return r;
+        });
+
         let favorites = JSON.parse(localStorage.getItem('favRecipes')) || [];
+        let pantry = JSON.parse(localStorage.getItem('myPantry')) || [];
         let currentWinningMeal = null;
+        let priceFilter = 'All';
+        let ulamTypeFilter = 'All';
+
+        function setPriceFilter(p) {
+            priceFilter = p;
+            document.querySelectorAll('.price-filter-btn').forEach(b => {
+                b.classList.remove('active', 'bg-orange-600', 'text-white', 'border-orange-600');
+                b.classList.add('bg-white', 'text-gray-800', 'border-gray-100');
+            });
+            const activeBtn = document.getElementById('price-' + p.toLowerCase());
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-orange-600', 'text-white', 'border-orange-600');
+                activeBtn.classList.remove('bg-white', 'text-gray-800', 'border-gray-100');
+            }
+        }
+
+        function setTypeFilter(t) {
+            ulamTypeFilter = t;
+            document.querySelectorAll('.type-filter-btn').forEach(b => {
+                b.classList.remove('active', 'bg-orange-600', 'text-white', 'border-orange-600');
+                b.classList.add('bg-white', 'text-gray-800', 'border-gray-100');
+            });
+            const activeBtn = document.getElementById('type-' + t.toLowerCase());
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-orange-600', 'text-white', 'border-orange-600');
+                activeBtn.classList.remove('bg-white', 'text-gray-800', 'border-gray-100');
+            }
+        }
 
         // Sound System
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTick() { if (audioCtx.state === 'suspended') audioCtx.resume(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
         function playWin() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.5); }
+
+        // Pantry Functions
+        function renderPantry() {
+            const list = document.getElementById('pantry-list');
+            list.innerHTML = pantry.length === 0 ? '<p class="text-center text-gray-400 py-8 text-xs">Pantry is empty.</p>' : '';
+            pantry.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'pantry-item flex justify-between items-center p-4 bg-blue-50 rounded-2xl border border-blue-100';
+                div.innerHTML = `<span class="text-xs font-bold text-gray-800">${item}</span><button onclick="removeFromPantry(${i})" class="text-red-500">🗑️</button>`;
+                list.appendChild(div);
+            });
+        }
+        function addToPantry() {
+            const val = document.getElementById('pantry-input').value.trim();
+            if (!val) return;
+            if (!pantry.includes(val)) pantry.push(val);
+            document.getElementById('pantry-input').value = '';
+            localStorage.setItem('myPantry', JSON.stringify(pantry));
+            renderPantry();
+        }
+        function removeFromPantry(i) {
+            pantry.splice(i, 1);
+            localStorage.setItem('myPantry', JSON.stringify(pantry));
+            renderPantry();
+        }
+        function loadPantryToFilter() {
+            if (pantry.length === 0) return alert("Pantry is empty! Add items first.");
+            document.getElementById('inventory-input').value = pantry.join(', ');
+            alert("Loaded " + pantry.length + " items from Pantry!");
+        }
 
         // Modal Logic
         function openModal(modalId) {
@@ -244,6 +389,7 @@
             if (modalId === 'manage-modal') renderRecipeList();
             if (modalId === 'favorites-modal') updateFavUI();
             if (modalId === 'inventory-modal') renderChips();
+            if (modalId === 'pantry-modal') renderPantry();
         }
         function closeModal() { document.getElementById('modal-backdrop').classList.add('hidden'); cancelEdit(); }
         document.getElementById('modal-backdrop').addEventListener('click', (e) => { if (e.target.id === 'modal-backdrop') closeModal(); });
@@ -272,82 +418,33 @@
             reader.readAsText(file);
         }
 
-        // Upgraded Magic Paste Parser
+        // Magic Parser
         function magicParse() {
             const raw = document.getElementById('magic-paste').value.trim();
             if (raw.length < 5) return alert("Paste some recipe text first!");
-
-            // 1. Detect format (newlines vs commas)
-            let lines = [];
-            if (raw.includes('\n')) {
-                lines = raw.split('\n').map(l => l.trim()).filter(l => l !== "");
-            } else if (raw.includes(',')) {
-                lines = raw.split(',').map(l => l.trim()).filter(l => l !== "");
-            } else {
-                lines = [raw];
-            }
-
-            let name = "";
-            let ingredients = [];
-            let steps = [];
-            let mode = "guessing"; // guessing, ing, steps
-
-            const ingKeywords = ["ingredient", "sangkap", "needs", "list"];
-            const stepKeywords = ["step", "instruction", "paraan", "direction", "how to"];
-            
-            // Smart Tagging Map (English to Tag)
-            const tagMap = {
-                "chicken": "Manok", "pork": "Baboy", "beef": "Baka", "fish": "Isda", "shrimp": "Hipon",
-                "egg": "Itlog", "tomato": "Kamatis", "onion": "Sibuyas", "garlic": "Bawang", "potato": "Patatas",
-                "vegetable": "Gulay", "cabbage": "Repolyo", "eggplant": "Talong", "beans": "Sitaw"
-            };
+            let lines = raw.includes('\n') ? raw.split('\n') : raw.split(',');
+            lines = lines.map(l => l.trim()).filter(l => l !== "");
+            let name = "", ingredients = [], steps = [], mode = "guessing";
+            const tagMap = { "chicken": "Manok", "pork": "Baboy", "beef": "Baka", "fish": "Isda", "shrimp": "Hipon", "egg": "Itlog", "tomato": "Kamatis", "onion": "Sibuyas", "garlic": "Bawang", "potato": "Patatas", "vegetable": "Gulay" };
             let detectedTags = new Set();
-
             lines.forEach((line, i) => {
                 const lowerLine = line.toLowerCase();
-                
-                // Header detection
-                if (ingKeywords.some(k => lowerLine.includes(k)) && lowerLine.length < 20) { mode = "ing"; return; }
-                if (stepKeywords.some(k => lowerLine.includes(k)) && lowerLine.length < 20) { mode = "steps"; return; }
-
-                if (mode === "guessing") {
-                    // Usually first line is name if it's short and has no numbers
-                    if (i === 0 && !/[\d]/.test(line) && line.length < 40) {
-                        name = line;
-                        mode = "ing"; // Assume next lines are ingredients
-                    } else {
-                        ingredients.push(line);
-                    }
-                } else if (mode === "ing") {
-                    ingredients.push(line);
-                } else if (mode === "steps") {
-                    steps.push(line);
-                }
-
-                // Auto-tagging logic
-                Object.keys(tagMap).forEach(key => {
-                    if (lowerLine.includes(key)) detectedTags.add(tagMap[key]);
-                });
+                if (["ingredient", "sangkap"].some(k => lowerLine.includes(k)) && lowerLine.length < 20) { mode = "ing"; return; }
+                if (["step", "instruction", "paraan"].some(k => lowerLine.includes(k)) && lowerLine.length < 20) { mode = "steps"; return; }
+                if (mode === "guessing" && i === 0 && !/[\d]/.test(line)) { name = line; mode = "ing"; }
+                else if (mode === "steps") steps.push(line);
+                else ingredients.push(line);
+                Object.keys(tagMap).forEach(key => { if (lowerLine.includes(key)) detectedTags.add(tagMap[key]); });
             });
-
-            // Guess name from ingredients if empty
-            if (!name && ingredients.length > 0) {
-                const mainIng = ingredients[0].replace(/[0-9\/\. lbs|oz|kg|g|tbsp|tsp|cup|piece|clove|cloves]/g, "").trim();
-                name = mainIng.charAt(0).toUpperCase() + mainIng.slice(1) + " Dish";
-            }
-
-            // Formatting
-            const cleanIngs = ingredients.map(ing => "• " + ing).join("\n");
+            if (!name && ingredients.length > 0) name = ingredients[0].replace(/[0-9\/|lbs|oz|cup|piece]/g, "").trim() + " Dish";
             const tagsString = Array.from(detectedTags).join(", ");
-            
             document.getElementById('form-name').value = name;
-            document.getElementById('form-ingredients').value = cleanIngs + (tagsString ? "\n\nTags: " + tagsString : "");
-            document.getElementById('form-steps').value = steps.join("\n") || "No steps detected. Please add manually.";
-            
-            alert("✨ Magic Format Done!\nI've auto-added Tags like '" + tagsString + "' so your search chips will work!");
+            document.getElementById('form-ingredients').value = ingredients.map(i => "• " + i).join("\n") + (tagsString ? "\n\nTags: " + tagsString : "");
+            document.getElementById('form-steps').value = steps.join("\n") || "No steps detected.";
+            alert("✨ Magic Format Done! Review tags: " + tagsString);
         }
 
-        // Chips & Inventory
+        // Chips & Filters
         const commonIngredients = ['Itlog', 'Kamatis', 'Baboy', 'Manok', 'Baka', 'Isda', 'Gulay', 'Talong', 'Sitaw', 'Patatas', 'Sibuyas', 'Tuna', 'Corned Beef', 'Sardinas'];
         function renderChips() {
             const container = document.getElementById('ingredient-chips');
@@ -368,26 +465,37 @@
         function spinByIngredients() {
             const input = document.getElementById('inventory-input').value.toLowerCase();
             const userIngs = input.split(',').map(i => i.trim()).filter(i => i !== "");
-            if (userIngs.length === 0) return alert("Pumili muna ng sangkap!");
-            const matched = recipes.filter(r => {
+            if (userIngs.length === 0) return alert("Select ingredients!");
+            
+            // Smart Filter: Count matches and sort by relevance
+            const matches = recipes.map(r => {
                 const recipeIngs = r.ingredients.toLowerCase();
-                return userIngs.every(ui => recipeIngs.includes(ui));
-            });
-            if (matched.length === 0) return alert("No match found for ALL these ingredients.");
-            closeModal(); spin('All', matched);
+                let count = 0;
+                userIngs.forEach(ui => { if (recipeIngs.includes(ui)) count++; });
+                return { recipe: r, count: count };
+            }).filter(m => m.count > 0);
+
+            if (matches.length === 0) return alert("No recipes found with those ingredients. Try adding more general items!");
+            
+            // Sort by highest match count
+            matches.sort((a, b) => b.count - a.count);
+            const maxCount = matches[0].count;
+            const bestMatches = matches.filter(m => m.count === maxCount).map(m => m.recipe);
+            
+            closeModal(); 
+            spin('All', bestMatches);
         }
 
         // Wheel Animation
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
-        let currentRotation = 0;
-        let isSpinning = false;
-
+        let currentRotation = 0, isSpinning = false;
         function drawWheel(items) {
-            const size = items.length;
+            const size = Math.min(items.length, 12);
+            const visibleItems = items.slice(0, size);
             const sliceAngle = (Math.PI * 2) / size;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            items.forEach((item, i) => {
+            visibleItems.forEach((item, i) => {
                 const angle = currentRotation + i * sliceAngle;
                 ctx.beginPath(); ctx.moveTo(130, 130); ctx.arc(130, 130, 120, angle, angle + sliceAngle);
                 ctx.fillStyle = i % 2 === 0 ? '#ea580c' : '#fbbf24'; ctx.fill();
@@ -395,16 +503,15 @@
                 ctx.fillStyle = 'white'; ctx.font = 'bold 10px Inter'; ctx.fillText(item.name.substring(0, 12), 40, 5); ctx.restore();
             });
         }
-
         function animateWheel(items, targetIndex, callback) {
-            const sliceAngle = (Math.PI * 2) / items.length;
+            const size = Math.min(items.length, 12);
+            const sliceAngle = (Math.PI * 2) / size;
             const targetRotation = (Math.PI * 2 * 5) + (Math.PI * 2 - (targetIndex * sliceAngle + sliceAngle / 2));
-            let start = null; const duration = 3000; let lastTickAngle = 0;
+            let start = null; let lastTickAngle = 0;
             function step(timestamp) {
                 if (!start) start = timestamp;
-                const progress = Math.min((timestamp - start) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                currentRotation = easeOut * targetRotation;
+                const progress = Math.min((timestamp - start) / 3000, 1);
+                currentRotation = (1 - Math.pow(1 - progress, 3)) * targetRotation;
                 if (currentRotation - lastTickAngle > 0.2) { playTick(); lastTickAngle = currentRotation; }
                 drawWheel(items);
                 if (progress < 1) requestAnimationFrame(step); else { isSpinning = false; callback(); }
@@ -414,40 +521,49 @@
 
         function spin(category, sourceArray = recipes) {
             if (isSpinning) return;
-            const filtered = sourceArray.filter(r => category === 'All' || r.category === category);
-            if (filtered.length === 0) return alert("Empty category!");
-            
+            const filtered = sourceArray.filter(r => {
+                const catMatch = (category === 'All' || r.category === category);
+                const priceMatch = (priceFilter === 'All' || r.price === priceFilter);
+                const typeMatch = (ulamTypeFilter === 'All' || r.type === ulamTypeFilter);
+                return catMatch && priceMatch && typeMatch;
+            });
+            if (filtered.length === 0) return alert("Walang ulam sa ganitong budget, category, at klase! Subukan ibahin ang filters.");
             document.getElementById('wheel-container').style.display = 'block';
             document.getElementById('slot-container').classList.add('hidden');
             document.getElementById('recipe-details').classList.add('hidden');
             document.getElementById('instruction-text').classList.add('hidden');
-
             const targetIndex = Math.floor(Math.random() * filtered.length);
             const winner = filtered[targetIndex];
-
             animateWheel(filtered, targetIndex, () => {
                 playWin(); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                const mealDisplay = document.getElementById('meal-name');
-                mealDisplay.innerText = "✨ " + winner.name.toUpperCase() + " ✨";
-                mealDisplay.classList.remove('hidden'); document.getElementById('slot-container').classList.remove('hidden');
+                document.getElementById('meal-name').innerText = "✨ " + winner.name.toUpperCase() + " ✨";
+                document.getElementById('meal-name').classList.remove('hidden');
+                document.getElementById('slot-container').classList.remove('hidden');
                 currentWinningMeal = winner;
+                
+                // Detailed Display
+                const tagsContainer = document.getElementById('meal-tags-container');
+                tagsContainer.innerHTML = `
+                    <span class="px-2 py-1 bg-orange-100 text-orange-700 text-[8px] font-black rounded-md uppercase">${winner.category}</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[8px] font-black rounded-md uppercase">${winner.price}</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-700 text-[8px] font-black rounded-md uppercase">${winner.type}</span>
+                `;
+
                 document.getElementById('fav-toggle-btn').innerText = favorites.some(f => f.name === winner.name) ? '❤️' : '🤍';
                 document.getElementById('meal-ingredients').innerText = winner.ingredients;
                 document.getElementById('meal-steps').innerText = winner.steps;
-                
                 const linkCont = document.getElementById('recipe-link-container');
                 if (winner.link) { document.getElementById('meal-link').href = winner.link; linkCont.classList.remove('hidden'); }
-                else { linkCont.classList.add('hidden'); }
-                
+                else linkCont.classList.add('hidden');
                 document.getElementById('recipe-details').classList.remove('hidden');
             });
         }
 
-        // Favorites
+        // Favorites & Manage
         function updateFavUI() {
             document.getElementById('fav-count').innerText = favorites.length;
             const container = document.getElementById('fav-list-container');
-            container.innerHTML = favorites.length === 0 ? '<p class="text-center text-gray-400 py-8 text-xs">Wala pang paborito.</p>' : '';
+            container.innerHTML = favorites.length === 0 ? '<p class="text-center text-gray-400 py-8 text-xs">No favorites.</p>' : '';
             favorites.forEach((fav, i) => {
                 const div = document.createElement('div'); div.className = 'flex justify-between items-center p-3 bg-red-50 rounded-2xl border border-red-100';
                 div.innerHTML = `<span class="text-xs font-bold text-gray-800">${fav.name}</span><button onclick="removeFavorite(${i})" class="text-red-500">🗑️</button>`;
@@ -462,10 +578,14 @@
             else { favorites.splice(idx, 1); document.getElementById('fav-toggle-btn').innerText = '🤍'; }
             localStorage.setItem('favRecipes', JSON.stringify(favorites)); updateFavUI();
         }
+        function quickEditCurrent() {
+            if (!currentWinningMeal) return;
+            const idx = recipes.findIndex(r => r.name === currentWinningMeal.name);
+            if (idx !== -1) editRecipe(idx);
+        }
         function removeFavorite(i) { favorites.splice(i, 1); localStorage.setItem('favRecipes', JSON.stringify(favorites)); updateFavUI(); }
         function spinFavorites() { closeModal(); spin('All', favorites); }
 
-        // Manage Recipes
         function renderRecipeList() {
             const container = document.getElementById('recipe-list-container');
             const searchTerm = document.getElementById('search-bar').value.toLowerCase();
@@ -478,7 +598,7 @@
                 }
             });
         }
-        function deleteRecipe(index) { if (confirm(`Burahin?`)) { recipes.splice(index, 1); localStorage.setItem('myRecipes', JSON.stringify(recipes)); renderRecipeList(); } }
+        function deleteRecipe(index) { if (confirm(`Delete?`)) { recipes.splice(index, 1); localStorage.setItem('myRecipes', JSON.stringify(recipes)); renderRecipeList(); } }
         function editRecipe(index) {
             const r = recipes[index]; document.getElementById('form-name').value = r.name; document.getElementById('form-category').value = r.category;
             document.getElementById('form-ingredients').value = r.ingredients; document.getElementById('form-steps').value = r.steps;
@@ -486,15 +606,19 @@
             document.getElementById('save-btn').innerText = "UPDATE RECIPE"; openModal('add-modal');
         }
         function cancelEdit() { document.getElementById('recipe-form').reset(); document.getElementById('magic-paste').value = ""; document.getElementById('edit-index').value = "-1"; document.getElementById('save-btn').innerText = "SAVE RECIPE"; }
-        function resetRecipes() { if(confirm("Reset to default 200+ list?")) { localStorage.removeItem('myRecipes'); location.reload(); } }
+        function resetRecipes() { if(confirm("Reset recipes?")) { localStorage.removeItem('myRecipes'); location.reload(); } }
 
         document.getElementById('recipe-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const editIndex = parseInt(document.getElementById('edit-index').value);
-            const data = {
-                name: document.getElementById('form-name').value, category: document.getElementById('form-category').value,
-                ingredients: document.getElementById('form-ingredients').value, steps: document.getElementById('form-steps').value,
-                link: document.getElementById('form-link').value
+            const data = { 
+                name: document.getElementById('form-name').value, 
+                category: document.getElementById('form-category').value, 
+                ingredients: document.getElementById('form-ingredients').value, 
+                steps: document.getElementById('form-steps').value, 
+                link: document.getElementById('form-link').value,
+                price: recipes[editIndex]?.price || 'Regular',
+                type: recipes[editIndex]?.type || 'Karne'
             };
             if (editIndex === -1) recipes.push(data); else recipes[editIndex] = data;
             localStorage.setItem('myRecipes', JSON.stringify(recipes)); closeModal();
