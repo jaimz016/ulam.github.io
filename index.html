@@ -42,108 +42,146 @@
         .chip.active { background-color: #ea580c !important; color: white !important; border-color: #ea580c !important; }
         .pantry-item { animation: slideIn 0.2s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        /* New Features Styles */
+        .recipe-image { width: 100%; height: 120px; object-fit: cover; border-radius: 1.5rem; margin-bottom: 1rem; background: #eee; }
+        .calendar-day { min-height: 80px; border: 1px solid #f1f1f1; padding: 8px; border-radius: 1rem; background: #fafafa; }
+        .log-item { border-left: 4px solid #ea580c; }
     </style>
 </head>
 <body class="pb-20">
 
-    <header class="bg-orange-600 text-white p-6 text-center shadow-lg">
-        <h1 class="text-3xl font-extrabold tracking-tighter">ULAM LOTTO 🎰</h1>
-        <p class="text-sm font-medium opacity-90 uppercase tracking-widest">Jackpot sa Gutom (100+ Recipes!)</p>
+    <header class="bg-orange-600 text-white p-6 lg:p-10 text-center shadow-lg">
+        <h1 class="text-3xl lg:text-5xl font-extrabold tracking-tighter">ULAM LOTTO 🎰</h1>
+        <p class="text-sm lg:text-base font-medium opacity-90 uppercase tracking-widest mt-2">Jackpot sa Gutom (100+ Recipes!)</p>
     </header>
 
-    <main class="max-w-md mx-auto p-4 space-y-6">
+    <main class="max-w-md md:max-w-2xl lg:max-w-6xl mx-auto p-4 lg:p-8 space-y-6">
         
-        <div class="text-right flex justify-between items-center">
-            <button onclick="openModal('favorites-modal')" class="text-[10px] text-red-500 hover:scale-105 transition uppercase font-bold tracking-widest flex items-center gap-1">❤️ Paborito (<span id="fav-count">0</span>)</button>
-            <button onclick="resetRecipes()" class="text-[10px] text-gray-400 hover:text-red-500 transition uppercase font-bold tracking-widest">Reset 🔄</button>
+        <div class="text-right flex justify-between items-center px-2">
+            <div class="flex gap-4">
+                <button onclick="openModal('calendar-modal')" class="text-[10px] lg:text-xs text-blue-500 hover:scale-105 transition uppercase font-bold tracking-widest flex items-center gap-1">📅 Planner</button>
+                <button onclick="openModal('log-modal')" class="text-[10px] lg:text-xs text-green-600 hover:scale-105 transition uppercase font-bold tracking-widest flex items-center gap-1">📜 History</button>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="openModal('favorites-modal')" class="text-[10px] lg:text-xs text-red-500 hover:scale-105 transition uppercase font-bold tracking-widest flex items-center gap-1">❤️ Paborito (<span id="fav-count">0</span>)</button>
+                <button onclick="resetRecipes()" class="text-[10px] lg:text-xs text-gray-400 hover:text-red-500 transition uppercase font-bold tracking-widest">Reset 🔄</button>
+            </div>
         </div>
 
-        <!-- LOTTO MACHINE -->
-        <section class="bg-white p-8 rounded-[2.5rem] shadow-xl border-4 border-orange-100 text-center relative overflow-hidden">
-            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Magkano ang Budget?</h2>
-            
-            <div class="flex justify-center gap-2 mb-6">
-                <button onclick="setPriceFilter('All')" id="price-all" class="price-filter-btn active px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">All</button>
-                <button onclick="setPriceFilter('Budget')" id="price-budget" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Tipid 🪙</button>
-                <button onclick="setPriceFilter('Regular')" id="price-regular" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Sakto ⚖️</button>
-                <button onclick="setPriceFilter('Deluxe')" id="price-deluxe" class="price-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Mayaman 💎</button>
-            </div>
-
-            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Anong Klaseng Ulam?</h2>
-            <div class="flex flex-wrap justify-center gap-2 mb-6">
-                <button onclick="setTypeFilter('All')" id="type-all" class="type-filter-btn active px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Kahit ano</button>
-                <button onclick="setTypeFilter('Karne')" id="type-karne" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Karne 🥩</button>
-                <button onclick="setTypeFilter('Gulay')" id="type-gulay" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Gulay 🥗</button>
-                <button onclick="setTypeFilter('Sabaw')" id="type-sabaw" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">May Sabaw 🥣</button>
-                <button onclick="setTypeFilter('Prito')" id="type-prito" class="type-filter-btn px-3 py-2 rounded-xl text-[9px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Prito/Dry 🍳</button>
-            </div>
-
-            <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Piliin ang Bola</h2>
-            
-            <div class="grid grid-cols-3 gap-4 mb-8">
-                <button onclick="spin('Breakfast')" class="group bg-yellow-400 hover:bg-yellow-500 text-white p-4 rounded-2xl shadow-md transition active:scale-90">
-                    <span class="block text-2xl">🍳</span>
-                    <span class="text-[10px] font-black uppercase">Agahan</span>
-                </button>
-                <button onclick="spin('Lunch')" class="group bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-2xl shadow-md transition active:scale-90">
-                    <span class="block text-2xl">🍚</span>
-                    <span class="text-[10px] font-black uppercase">Tanghalian</span>
-                </button>
-                <button onclick="spin('Dinner')" class="group bg-red-500 hover:bg-red-600 text-white p-4 rounded-2xl shadow-md transition active:scale-90">
-                    <span class="block text-2xl">🍲</span>
-                    <span class="text-[10px] font-black uppercase">Hapunan</span>
-                </button>
-            </div>
-            
-            <button onclick="spin('All')" class="w-full mb-8 bg-gray-800 text-white p-4 rounded-2xl shadow-md transition active:scale-95 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
-                🎲 Surprise Me! (Any Meal)
-            </button>
-
-            <div id="display-screen" class="bg-gray-900 rounded-3xl p-6 min-h-[160px] flex flex-col items-center justify-center border-8 border-gray-800 shadow-inner relative">
-                <div id="wheel-container">
-                    <div id="wheel-pointer"></div>
-                    <canvas id="wheel-canvas" width="260" height="260"></canvas>
-                </div>
-                
-                <div id="slot-container" class="text-center">
-                    <p id="instruction-text" class="text-orange-400 text-sm font-mono animate-pulse text-center uppercase">Choose a category</p>
-                    <h3 id="meal-name" class="text-2xl font-black text-white leading-tight hidden text-center"></h3>
-                </div>
-            </div>
-
-            <div id="recipe-details" class="hidden mt-6 text-left p-5 bg-orange-50 rounded-2xl border border-orange-200 pop-effect relative">
-                <div class="absolute top-4 right-4 flex items-center gap-3">
-                    <button id="quick-edit-btn" onclick="quickEditCurrent()" title="Edit Recipe" class="text-lg opacity-40 hover:opacity-100 hover:scale-110 transition">✏️</button>
-                    <button id="fav-toggle-btn" onclick="toggleFavoriteCurrent()" class="text-2xl hover:scale-110 transition">🤍</button>
-                </div>
-                <div class="space-y-3 text-sm text-gray-800 pr-8">
-                    <div id="meal-tags-container" class="flex flex-wrap gap-1 mb-2"></div>
-                    <p><strong>🛒 Sangkap:</strong> <span id="meal-ingredients" class="text-gray-600 text-xs italic"></span></p>
-                    <div id="meal-steps-container">
-                        <strong>👨‍🍳 Steps:</strong>
-                        <div id="meal-steps" class="text-gray-600 text-xs whitespace-pre-line leading-relaxed mt-1"></div>
+        <div class="lg:grid lg:grid-cols-2 lg:gap-10 items-start">
+            <!-- LEFT COLUMN: FILTERS & SPIN -->
+            <div class="space-y-6">
+                <!-- LOTTO MACHINE -->
+                <section class="bg-white p-6 lg:p-10 rounded-[2.5rem] shadow-xl border-4 border-orange-100 text-center relative overflow-hidden">
+                    <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Magkano ang Budget?</h2>
+                    
+                    <div class="flex flex-wrap justify-center gap-2 mb-6">
+                        <button onclick="setPriceFilter('All')" id="price-all" class="price-filter-btn active px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">All</button>
+                        <button onclick="setPriceFilter('Budget')" id="price-budget" class="price-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Tipid 🪙</button>
+                        <button onclick="setPriceFilter('Regular')" id="price-regular" class="price-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Sakto ⚖️</button>
+                        <button onclick="setPriceFilter('Deluxe')" id="price-deluxe" class="price-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Mayaman 💎</button>
                     </div>
-                    <div id="recipe-link-container" class="pt-4 hidden">
-                        <a id="meal-link" href="#" target="_blank" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition">View Full Recipe Online 🌐</a>
+
+                    <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Anong Klaseng Ulam?</h2>
+                    <div class="flex flex-wrap justify-center gap-2 mb-6">
+                        <button onclick="setTypeFilter('All')" id="type-all" class="type-filter-btn active px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Kahit ano</button>
+                        <button onclick="setTypeFilter('Karne')" id="type-karne" class="type-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Karne 🥩</button>
+                        <button onclick="setTypeFilter('Gulay')" id="type-gulay" class="type-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Gulay 🥗</button>
+                        <button onclick="setTypeFilter('Sabaw')" id="type-sabaw" class="type-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">May Sabaw 🥣</button>
+                        <button onclick="setTypeFilter('Prito')" id="type-prito" class="type-filter-btn px-4 py-3 rounded-xl text-[10px] font-black uppercase border-2 border-gray-100 transition shadow-sm">Prito/Dry 🍳</button>
+                    </div>
+
+                    <h2 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Piliin ang Bola</h2>
+                    
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <button onclick="spin('Breakfast')" class="group bg-yellow-400 hover:bg-yellow-500 text-white p-5 lg:p-7 rounded-2xl shadow-md transition active:scale-90">
+                            <span class="block text-2xl lg:text-4xl">🍳</span>
+                            <span class="text-[10px] lg:text-xs font-black uppercase mt-2 block">Agahan</span>
+                        </button>
+                        <button onclick="spin('Lunch')" class="group bg-orange-500 hover:bg-orange-600 text-white p-5 lg:p-7 rounded-2xl shadow-md transition active:scale-90">
+                            <span class="block text-2xl lg:text-4xl">🍚</span>
+                            <span class="text-[10px] lg:text-xs font-black uppercase mt-2 block">Tanghalian</span>
+                        </button>
+                        <button onclick="spin('Dinner')" class="group bg-red-500 hover:bg-red-600 text-white p-5 lg:p-7 rounded-2xl shadow-md transition active:scale-90">
+                            <span class="block text-2xl lg:text-4xl">🍲</span>
+                            <span class="text-[10px] lg:text-xs font-black uppercase mt-2 block">Hapunan</span>
+                        </button>
+                    </div>
+                    
+                    <button onclick="spin('All')" class="w-full mb-4 bg-gray-800 text-white p-5 rounded-2xl shadow-md transition active:scale-95 font-black uppercase text-[10px] lg:text-xs tracking-widest flex items-center justify-center gap-2">
+                        🎲 Surprise Me! (Any Meal)
+                    </button>
+                </section>
+
+                <!-- ACTION BUTTONS -->
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-3 relative z-10">
+                    <button onclick="openModal('inventory-modal')" class="bg-orange-100 hover:bg-orange-200 text-orange-700 p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                        <span class="text-2xl lg:text-3xl">🧊</span> Ano'ng nasa Ref?
+                    </button>
+                    <button onclick="openModal('pantry-modal')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                        <span class="text-2xl lg:text-3xl">📦</span> My Pantry
+                    </button>
+                    <button onclick="openModal('add-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                        <span class="text-2xl lg:text-3xl">➕</span> Add Recipe
+                    </button>
+                    <button onclick="openModal('manage-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
+                        <span class="text-2xl lg:text-3xl">📋</span> Manage List
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: RESULTS & DETAILS -->
+            <div class="space-y-6 sticky top-8">
+                <div id="display-screen" class="bg-gray-900 rounded-[2.5rem] p-8 min-h-[220px] flex flex-col items-center justify-center border-8 border-gray-800 shadow-inner relative overflow-hidden">
+                    <div id="wheel-container">
+                        <div id="wheel-pointer"></div>
+                        <canvas id="wheel-canvas" width="260" height="260"></canvas>
+                    </div>
+                    
+                    <div id="slot-container" class="text-center">
+                        <p id="instruction-text" class="text-orange-400 text-sm lg:text-lg font-mono animate-pulse text-center uppercase">Choose a category to start the lotto</p>
+                        <h3 id="meal-name" class="text-3xl lg:text-5xl font-black text-white leading-tight hidden text-center drop-shadow-lg"></h3>
+                    </div>
+                </div>
+
+                <div id="recipe-details" class="hidden text-left p-6 lg:p-10 bg-orange-50 rounded-[2.5rem] border-4 border-orange-100 pop-effect relative shadow-xl">
+                    <div class="absolute top-6 right-6 flex items-center gap-4">
+                        <button id="quick-edit-btn" onclick="quickEditCurrent()" title="Edit Recipe" class="text-xl lg:text-2xl opacity-40 hover:opacity-100 hover:scale-110 transition">✏️</button>
+                        <button id="fav-toggle-btn" onclick="toggleFavoriteCurrent()" class="text-3xl lg:text-4xl hover:scale-110 transition">🤍</button>
+                    </div>
+                    
+                    <img id="meal-image" class="recipe-image lg:h-64 rounded-3xl shadow-md mb-6" src="" alt="Food Image">
+                    
+                    <div class="space-y-4 text-sm lg:text-base text-gray-800">
+                        <div id="meal-tags-container" class="flex flex-wrap gap-2 mb-4"></div>
+                        
+                        <div id="pairing-suggestion" class="hidden p-4 bg-blue-100 border-2 border-blue-200 rounded-2xl mb-4">
+                            <p class="text-[10px] lg:text-xs font-black text-blue-700 uppercase mb-1">✨ Perfect Pair Suggestion:</p>
+                            <p id="pair-text" class="text-sm lg:text-lg font-bold text-blue-900"></p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
+                            <p class="mb-2"><strong>🛒 Sangkap:</strong></p>
+                            <span id="meal-ingredients" class="text-gray-600 text-xs lg:text-sm italic leading-relaxed"></span>
+                        </div>
+
+                        <div id="meal-steps-container" class="bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
+                            <strong>👨‍🍳 Steps:</strong>
+                            <div id="meal-steps" class="text-gray-600 text-xs lg:text-sm whitespace-pre-line leading-relaxed mt-2"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6">
+                            <button onclick="logCookingCurrent()" class="bg-green-600 text-white py-4 rounded-2xl text-xs lg:text-sm font-black uppercase tracking-widest hover:bg-green-700 transition shadow-lg active:scale-95">✅ LUTO NA!</button>
+                            <button onclick="addToPlanCurrent()" class="bg-blue-600 text-white py-4 rounded-2xl text-xs lg:text-sm font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg active:scale-95">📅 ADD TO PLAN</button>
+                        </div>
+
+                        <div id="recipe-link-container" class="pt-2 hidden">
+                            <a id="meal-link" href="#" target="_blank" class="block text-center bg-gray-800 text-white px-6 py-4 rounded-2xl text-xs lg:text-sm font-bold uppercase tracking-widest hover:bg-black transition shadow-md">Full Recipe Online 🌐</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- ACTION BUTTONS -->
-        <div class="grid grid-cols-2 gap-2 pb-4 relative z-10">
-            <button onclick="openModal('inventory-modal')" class="bg-orange-100 hover:bg-orange-200 text-orange-700 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
-                <span class="text-2xl">🧊</span> Ano'ng nasa Ref?
-            </button>
-            <button onclick="openModal('pantry-modal')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
-                <span class="text-2xl">📦</span> My Pantry
-            </button>
-            <button onclick="openModal('add-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
-                <span class="text-2xl">➕</span> Add Recipe
-            </button>
-            <button onclick="openModal('manage-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-4 rounded-3xl text-[10px] font-bold uppercase tracking-widest transition flex flex-col items-center gap-2 shadow-sm active:scale-95">
-                <span class="text-2xl">📋</span> Manage List
-            </button>
         </div>
 
     </main>
@@ -151,6 +189,29 @@
     <!-- MODAL SYSTEM -->
     <div id="modal-backdrop" class="hidden fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
         
+        <!-- CALENDAR MODAL -->
+        <div id="calendar-modal" class="modal-content hidden bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative p-8 pop-effect">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 text-2xl font-black">&times;</button>
+            <h2 class="text-xl font-black mb-2 text-gray-800 flex items-center gap-2"><span>📅</span> Weekly Planner</h2>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase font-bold tracking-tight italic">Tap a day to clear its ulam</p>
+            
+            <div id="calendar-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Calendar days here -->
+            </div>
+        </div>
+
+        <!-- LOG MODAL -->
+        <div id="log-modal" class="modal-content hidden bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative p-8 pop-effect">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 text-2xl font-black">&times;</button>
+            <h2 class="text-xl font-black mb-2 text-gray-800 flex items-center gap-2"><span>📜</span> Cooking History</h2>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase font-bold tracking-tight italic">Records of what you've cooked</p>
+            
+            <div id="log-list" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Log items here -->
+            </div>
+            <button onclick="clearHistory()" class="w-full mt-6 text-[10px] text-red-500 font-black uppercase tracking-widest">Clear All History 🗑️</button>
+        </div>
+
         <!-- REF SEARCH MODAL -->
         <div id="inventory-modal" class="modal-content hidden bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative p-8 pop-effect">
             <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 text-2xl font-black">&times;</button>
@@ -285,7 +346,33 @@
             { name: "Sinigang na Isda", category: "Lunch", price: "Regular", type: "Sabaw", ingredients: "Bangus o Lapu-lapu, Sinigang Mix, Mustasa, Labanos, Kamatis", steps: "1. Pakuluin ang tubig na may kamatis, sibuyas, at labanos.\n2. Ilagay ang isda at sinigang mix.\n3. Huling ilagay ang mustasa o kangkong.\n4. Lutuin nang mabilis para hindi madurog ang isda." },
             { name: "Dinuguan", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "Pork, Pig's Blood, Suka, Sili haba", steps: "1. Igisa ang baboy sa bawang, sibuyas, at luya.\n2. Ibuhos ang suka at huwag haluin hanggang kumulo.\n3. Ibuhos ang dugo ng baboy habang hinahalo nang maigi para hindi mamuo.\n4. Ilagay ang sili at pakuluin hanggang lumapot ang sauce." },
             { name: "Fried Chicken (Pinoy Style)", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Chicken, Flour, Calamansi, Toyo", steps: "1. I-marinate ang manok sa calamansi at toyo.\n2. I-coat sa tinimplahang harina.\n3. I-deep fry hanggang maging golden brown at luto ang loob." },
-            { name: "Pork Chop (Prito)", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Pork Chop, Asin, Paminta, Calamansi", steps: "1. Timplahan ang pork chop ng asin, paminta, at calamansi.\n2. Iprito sa mainit na mantika hanggang maluto ang magkabilang panig." }
+            { name: "Pork Chop (Prito)", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Pork Chop, Asin, Paminta, Calamansi", steps: "1. Timplahan ang pork chop ng asin, paminta, at calamansi.\n2. Iprito sa mainit na mantika hanggang maluto ang magkabilang panig." },
+            // NEW BUDGET & REGULAR RECIPES
+            { name: "Corned Beef w/ Patatas", category: "Breakfast", price: "Budget", type: "Karne", ingredients: "Canned Corned Beef, Patatas, Sibuyas", steps: "1. Igisa ang sibuyas.\n2. Ihalo ang corned beef.\n3. Ilagay ang maliliit na cubes ng patatas at lutuin hanggang lumambot.", pairsWith: "Fried Egg" },
+            { name: "Scrambled Egg w/ Kamatis", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Itlog, Kamatis, Sibuyas", steps: "1. Igisa ang kamatis at sibuyas.\n2. Ibuhos ang binating itlog at haluin.", pairsWith: "Sinangag" },
+            { name: "Tuyong may Kamatis", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Tuyo, Kamatis, Suka", steps: "1. Iprito ang tuyo hanggang maging crispy.\n2. Ihain kasama ang hiniwang kamatis at suka.", pairsWith: "Champorado" },
+            { name: "Ginisang Repolyo", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Repolyo, Bawang, Sibuyas, Pork bits", steps: "1. Igisa ang bawang, sibuyas, at konting baboy.\n2. Ilagay ang repolyo at timplahan ng patis.", pairsWith: "Fried Fish" },
+            { name: "Adobong Sitaw", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Sitaw, Toyo, Suka, Bawang", steps: "1. Igisa ang bawang.\n2. Ilagay ang sitaw, toyo, at konting tubig.\n3. Pakuluin at ilagay ang suka sa huli.", pairsWith: "Pritong Liempo" },
+            { name: "Tortang Sayote", category: "Dinner", price: "Budget", type: "Gulay", ingredients: "Sayote, Itlog, Bawang", steps: "1. Igisa ang sayote hanggang lumambot.\n2. Ihalo sa binating itlog at iprito na parang pancake.", pairsWith: "Ketchup" },
+            { name: "Ginisang Sardinas w/ Pechay", category: "Dinner", price: "Budget", type: "Sabaw", ingredients: "Canned Sardines, Pechay, Bawang", steps: "1. Igisa ang bawang at sibuyas.\n2. Ihalo ang sardinas at lagyan ng konting tubig.\n3. Huling ilagay ang pechay.", pairsWith: "Mainit na Kanin" },
+            { name: "Odong Noodles", category: "Lunch", price: "Budget", type: "Sabaw", ingredients: "Odong Noodles, Sardinas, Tinapa", steps: "1. Pakuluin ang tubig at ilagay ang noodles.\n2. Ihalo ang sardinas o tinapa.\n3. Timplahan ng asin.", pairsWith: "Fried Tokwa" },
+            { name: "Pork Steak (Pinoy)", category: "Lunch", price: "Regular", type: "Karne", ingredients: "Pork Slices, Toyo, Calamansi, Sibuyas Rings", steps: "1. I-marinate ang baboy sa toyo at calamansi.\n2. Iprito ang baboy.\n3. Igisa ang sibuyas rings sa marinade at ibuhos sa baboy.", pairsWith: "Gisadong Sayote" },
+            { name: "Chicken Pastel", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Manok, Cream, Mushroom, Chorizo", steps: "1. Igisa ang manok at pampalasa.\n2. Ihalo ang mushroom at cream.\n3. Pakuluin hanggang lumapot.", pairsWith: "Garlic Bread" },
+            { name: "Sweet and Sour Fish", category: "Lunch", price: "Regular", type: "Prito", ingredients: "Isda, Bell Pepper, Pineapple chunks, Ketchup", steps: "1. Iprito ang isda.\n2. Gumawa ng sauce gamit ang ketchup, suka, asukal, at pinya.\n3. Ibuhos ang sauce sa isda.", pairsWith: "Chopsuey" },
+            { name: "Chopsuey", category: "Lunch", price: "Regular", type: "Gulay", ingredients: "Repolyo, Baguio Beans, Carrots, Cauliflower, Liver", steps: "1. Igisa ang atay at lahat ng gulay.\n2. Lagyan ng oyster sauce at konting cornstarch solution para lumapot ang sauce.", pairsWith: "Fried Chicken" },
+            { name: "Laing", category: "Dinner", price: "Regular", type: "Gulay", ingredients: "Gabi Leaves, Gata, Sili, Bagoong", steps: "1. Pakuluin ang gata kasama ang bagoong at sili.\n2. Ilagay ang dahon ng gabi. HUWAG HALUIN agad para hindi mangati.\n3. Lutuin hanggang mag-mantika ang gata.", pairsWith: "Pritong Isda" },
+            { name: "Pork Hamonado", category: "Dinner", price: "Regular", type: "Karne", ingredients: "Pork Belly, Pineapple Juice, Toyo", steps: "1. Pakuluin ang baboy sa pineapple juice at toyo hanggang lumambot at mag-caramelize ang sauce.", pairsWith: "Atchara" },
+            { name: "Beef Pares", category: "Dinner", price: "Regular", type: "Sabaw", ingredients: "Beef, Star Anise, Toyo, Asukal", steps: "1. Pakuluin ang beef hanggang lumambot nang husto.\n2. Timplahan ng toyo, star anise, at asukal hanggang maging malapot ang sabaw.", pairsWith: "Garlic Fried Rice" },
+            { name: "Embutido (Budget)", category: "Lunch", price: "Budget", type: "Karne", ingredients: "Ground Pork, Itlog, Harina, Pampa-lasa", steps: "1. Paghaluin ang pork, itlog, at harina.\n2. Ibalot sa plastic o foil at i-steam.\n3. Pwede ring iprito pagkatapos i-steam.", pairsWith: "Ketchup" },
+            { name: "Ginisang Toge w/ Tokwa", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Toge, Tokwa, Carrots", steps: "1. Iprito ang tokwa cubes.\n2. Igisa ang toge at carrots.\n3. Ihalo ang tokwa at timplahan ng patis.", pairsWith: "Pritong Isda" },
+            { name: "Sautéed Corned Beef w/ Cabbage", category: "Breakfast", price: "Budget", type: "Karne", ingredients: "Corned Beef, Repolyo, Sibuyas", steps: "1. Igisa ang sibuyas.\n2. Ihalo ang corned beef at repolyo.\n3. Lutuin hanggang lumambot ang repolyo.", pairsWith: "Pandesal" },
+            { name: "Egg Drop Soup (Pinoy Style)", category: "Dinner", price: "Budget", type: "Sabaw", ingredients: "Itlog, Cornstarch, Chicken Cubes", steps: "1. Pakuluin ang tubig na may chicken cube.\n2. Ibuhos ang binating itlog habang hinahalo nang paikot.\n3. Lagyan ng cornstarch solution para lumapot.", pairsWith: "Fried Rice" },
+            { name: "Adobong Itlog", category: "Lunch", price: "Budget", type: "Karne", ingredients: "Nilagang Itlog, Toyo, Suka, Bawang", steps: "1. Igisa ang bawang.\n2. Ilagay ang toyo, suka, at nilagang itlog.\n3. Pakuluin hanggang mag-absorb ang lasa sa itlog.", pairsWith: "Ginisang Gulay" },
+            { name: "Pritong Talong w/ Bagoong", category: "Lunch", price: "Budget", type: "Prito", ingredients: "Talong, Bagoong, Calamansi", steps: "1. Iprito ang hiniwang talong.\n2. Ihain kasama ang bagoong na may calamansi at sili.", pairsWith: "Fried Galunggong" },
+            { name: "Sinigang na Sardinas", category: "Dinner", price: "Budget", type: "Sabaw", ingredients: "Canned Sardines, Sinigang Mix, Gulay", steps: "1. Pakuluin ang tubig na may sinigang mix.\n2. Ilagay ang sardinas at mga gulay (kangkong, labanos).", pairsWith: "Mainit na Kanin" },
+            { name: "Ginisang Kalabasa at Sitaw", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Kalabasa, Sitaw, Gata (optional)", steps: "1. Igisa ang bawang at sibuyas.\n2. Ilagay ang kalabasa at sitaw hanggang lumambot.\n3. Pwedeng lagyan ng gata para mas masarap.", pairsWith: "Pritong Isda" },
+            { name: "Fried Itlog w/ Hotdog", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Itlog, Hotdog", steps: "1. Iprito ang hotdog.\n2. Iprito ang itlog (sunny side up o scrambled).", pairsWith: "Sinangag" },
+            { name: "Ginisang Tuna w/ Itlog", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Canned Tuna, Itlog, Sibuyas", steps: "1. Igisa ang sibuyas at tuna.\n2. Ihalo ang binating itlog.", pairsWith: "Pandesal" }
         ];
 
         // Persistence Logic
@@ -316,9 +403,89 @@
 
         let favorites = JSON.parse(localStorage.getItem('favRecipes')) || [];
         let pantry = JSON.parse(localStorage.getItem('myPantry')) || [];
+        let cookingLog = JSON.parse(localStorage.getItem('cookingLog')) || [];
+        let weeklyPlan = JSON.parse(localStorage.getItem('weeklyPlan')) || {
+            'Mon': null, 'Tue': null, 'Wed': null, 'Thu': null, 'Fri': null, 'Sat': null, 'Sun': null
+        };
+
         let currentWinningMeal = null;
         let priceFilter = 'All';
         let ulamTypeFilter = 'All';
+
+        // NEW FUNCTIONS
+        function logCookingCurrent() {
+            if (!currentWinningMeal) return;
+            const entry = {
+                name: currentWinningMeal.name,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            cookingLog.unshift(entry);
+            if (cookingLog.length > 50) cookingLog.pop();
+            localStorage.setItem('cookingLog', JSON.stringify(cookingLog));
+            alert("🍽️ Marked as Cooked! Check your History.");
+            renderLog();
+        }
+
+        function renderLog() {
+            const list = document.getElementById('log-list');
+            list.innerHTML = cookingLog.length === 0 ? '<p class="text-center text-gray-400 py-8 text-xs">No history yet.</p>' : '';
+            cookingLog.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'log-item p-4 bg-gray-50 rounded-2xl border-l-4 border-orange-500 mb-2';
+                div.innerHTML = `
+                    <p class="text-xs font-black text-gray-800">${item.name}</p>
+                    <p class="text-[9px] text-gray-500 font-bold mt-1">📅 ${item.date} • ⏰ ${item.time}</p>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function clearHistory() { if(confirm("Clear history?")) { cookingLog = []; localStorage.setItem('cookingLog', '[]'); renderLog(); } }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            days.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'calendar-day flex justify-between items-center cursor-pointer hover:bg-orange-50 transition mb-2';
+                div.onclick = () => clearPlan(day);
+                const meal = weeklyPlan[day];
+                div.innerHTML = `
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase">${day}</p>
+                        <p class="text-xs font-bold ${meal ? 'text-orange-600' : 'text-gray-300 italic'}">${meal ? meal : 'No ulam planned'}</p>
+                    </div>
+                    ${meal ? '<span class="text-xs">🗑️</span>' : '<span>➕</span>'}
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function addToPlanCurrent() {
+            if (!currentWinningMeal) return;
+            const day = prompt("Anong araw? (Mon, Tue, Wed, Thu, Fri, Sat, Sun)").trim();
+            const validDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            if (!validDays.includes(day)) return alert("Invalid day! Gamitin ang: Mon, Tue, etc.");
+            weeklyPlan[day] = currentWinningMeal.name;
+            localStorage.setItem('weeklyPlan', JSON.stringify(weeklyPlan));
+            alert(`📅 Added ${currentWinningMeal.name} to ${day}!`);
+            renderCalendar();
+        }
+
+        function clearPlan(day) {
+            if (weeklyPlan[day] && confirm(`Clear ${day}?`)) {
+                weeklyPlan[day] = null;
+                localStorage.setItem('weeklyPlan', JSON.stringify(weeklyPlan));
+                renderCalendar();
+            }
+        }
+
+        function getFoodImage(name) {
+            const keywords = name.toLowerCase().split(' ').join(',');
+            return `https://loremflickr.com/400/200/food,filipino,dish,${keywords}?random=${Math.random()}`;
+        }
 
         function setPriceFilter(p) {
             priceFilter = p;
@@ -357,7 +524,7 @@
             list.innerHTML = pantry.length === 0 ? '<p class="text-center text-gray-400 py-8 text-xs">Pantry is empty.</p>' : '';
             pantry.forEach((item, i) => {
                 const div = document.createElement('div');
-                div.className = 'pantry-item flex justify-between items-center p-4 bg-blue-50 rounded-2xl border border-blue-100';
+                div.className = 'pantry-item flex justify-between items-center p-4 bg-blue-50 rounded-2xl border border-blue-100 mb-2';
                 div.innerHTML = `<span class="text-xs font-bold text-gray-800">${item}</span><button onclick="removeFromPantry(${i})" class="text-red-500">🗑️</button>`;
                 list.appendChild(div);
             });
@@ -390,6 +557,8 @@
             if (modalId === 'favorites-modal') updateFavUI();
             if (modalId === 'inventory-modal') renderChips();
             if (modalId === 'pantry-modal') renderPantry();
+            if (modalId === 'calendar-modal') renderCalendar();
+            if (modalId === 'log-modal') renderLog();
         }
         function closeModal() { document.getElementById('modal-backdrop').classList.add('hidden'); cancelEdit(); }
         document.getElementById('modal-backdrop').addEventListener('click', (e) => { if (e.target.id === 'modal-backdrop') closeModal(); });
@@ -548,6 +717,14 @@
                     <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[8px] font-black rounded-md uppercase">${winner.price}</span>
                     <span class="px-2 py-1 bg-green-100 text-green-700 text-[8px] font-black rounded-md uppercase">${winner.type}</span>
                 `;
+
+                document.getElementById('meal-image').src = getFoodImage(winner.name);
+                if (winner.pairsWith) {
+                    document.getElementById('pairing-suggestion').classList.remove('hidden');
+                    document.getElementById('pair-text').innerText = winner.pairsWith;
+                } else {
+                    document.getElementById('pairing-suggestion').classList.add('hidden');
+                }
 
                 document.getElementById('fav-toggle-btn').innerText = favorites.some(f => f.name === winner.name) ? '❤️' : '🤍';
                 document.getElementById('meal-ingredients').innerText = winner.ingredients;
