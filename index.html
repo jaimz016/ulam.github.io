@@ -268,12 +268,37 @@
                 <input type="text" id="form-name" placeholder="Ulam Name" class="w-full p-5 bg-gray-50 rounded-3xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-sm font-bold" required>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <select id="form-category" class="p-5 bg-gray-50 rounded-3xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs font-bold uppercase tracking-tight">
-                        <option value="Breakfast">Agahan</option>
-                        <option value="Lunch">Tanghalian</option>
-                        <option value="Dinner">Hapunan</option>
-                    </select>
-                    <button type="submit" id="save-btn" class="bg-gray-900 text-white font-black rounded-3xl hover:bg-black transition text-sm">SAVE RECIPE</button>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-gray-400 uppercase ml-3">Meal Time</label>
+                        <select id="form-category" class="w-full p-5 bg-gray-50 rounded-3xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs font-bold uppercase tracking-tight">
+                            <option value="Breakfast">Agahan</option>
+                            <option value="Lunch">Tanghalian</option>
+                            <option value="Dinner">Hapunan</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-gray-400 uppercase ml-3">Price / Budget</label>
+                        <select id="form-price" class="w-full p-5 bg-gray-50 rounded-3xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs font-bold uppercase tracking-tight">
+                            <option value="Budget">Tipid 🪙</option>
+                            <option value="Regular" selected>Sakto ⚖️</option>
+                            <option value="Deluxe">Mayaman 💎</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-gray-400 uppercase ml-3">Ulam Type</label>
+                        <select id="form-type" class="w-full p-5 bg-gray-50 rounded-3xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs font-bold uppercase tracking-tight">
+                            <option value="Karne">Karne 🥩</option>
+                            <option value="Gulay">Gulay 🥗</option>
+                            <option value="Sabaw">May Sabaw 🥣</option>
+                            <option value="Prito">Prito/Dry 🍳</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" id="save-btn" class="w-full h-[58px] bg-gray-900 text-white font-black rounded-3xl hover:bg-black transition text-sm">SAVE RECIPE</button>
+                    </div>
                 </div>
 
                 <input type="url" id="form-link" placeholder="Recipe Link (URL) - Optional" class="w-full p-4 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-400 outline-none text-xs">
@@ -372,7 +397,444 @@
             { name: "Sinigang na Sardinas", category: "Dinner", price: "Budget", type: "Sabaw", ingredients: "Canned Sardines, Sinigang Mix, Gulay", steps: "1. Pakuluin ang tubig na may sinigang mix.\n2. Ilagay ang sardinas at mga gulay (kangkong, labanos).", pairsWith: "Mainit na Kanin" },
             { name: "Ginisang Kalabasa at Sitaw", category: "Lunch", price: "Budget", type: "Gulay", ingredients: "Kalabasa, Sitaw, Gata (optional)", steps: "1. Igisa ang bawang at sibuyas.\n2. Ilagay ang kalabasa at sitaw hanggang lumambot.\n3. Pwedeng lagyan ng gata para mas masarap.", pairsWith: "Pritong Isda" },
             { name: "Fried Itlog w/ Hotdog", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Itlog, Hotdog", steps: "1. Iprito ang hotdog.\n2. Iprito ang itlog (sunny side up o scrambled).", pairsWith: "Sinangag" },
-            { name: "Ginisang Tuna w/ Itlog", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Canned Tuna, Itlog, Sibuyas", steps: "1. Igisa ang sibuyas at tuna.\n2. Ihalo ang binating itlog.", pairsWith: "Pandesal" }
+            { name: "Ginisang Tuna w/ Itlog", category: "Breakfast", price: "Budget", type: "Prito", ingredients: "Canned Tuna, Itlog, Sibuyas", steps: "1. Igisa ang sibuyas at tuna.\n2. Ihalo ang binating itlog.", pairsWith: "Pandesal" },
+            // FILLING GAPS FOR ALL COMBOS
+            { name: "Beef Morcon", category: "Dinner", price: "Deluxe", type: "Karne", ingredients: "Beef Flank, Sausage, Pickles, Egg, Cheese", steps: "1. I-marinate ang baka sa toyo at calamansi.\n2. Ilagay ang palaman sa gitna at i-roll.\n3. Lutuin sa tomato sauce hanggang lumambot.", pairsWith: "Mashed Potato" },
+            { name: "Roast Chicken (Turbo)", category: "Lunch", price: "Deluxe", type: "Karne", ingredients: "Whole Chicken, Lemon Grass, Garlic, Butter", steps: "1. Palaman ang loob ng manok ng tanglad at bawang.\n2. Pahiran ng butter ang balat.\n3. I-bake o i-turbo hanggang maging golden brown.", pairsWith: "Gravy" },
+            { name: "Seafood Chopsuey (Deluxe)", category: "Lunch", price: "Deluxe", type: "Gulay", ingredients: "Shrimp, Squid, Broccoli, Cauliflower, Quail Eggs", steps: "1. Igisa ang seafood.\n2. Ihalo ang lahat ng gulay at quail eggs.\n3. Lagyan ng oyster sauce at cornstarch para lumapot.", pairsWith: "Fried Rice" },
+            { name: "Gising-Gising (Deluxe)", category: "Lunch", price: "Deluxe", type: "Gulay", ingredients: "Sigarilyas, Baguio Beans, Gata, Hipon, Ground Pork", steps: "1. Igisa ang baboy at hipon.\n2. Ilagay ang gata at sili.\n3. Huling ilagay ang beans at sigarilyas hanggang maluto.", pairsWith: "Pritong Isda" },
+            { name: "Ensaladang Talong w/ Liempo", category: "Lunch", price: "Deluxe", type: "Gulay", ingredients: "Grilled Talong, Itlog na Maalat, Kamatis, Grilled Liempo bits", steps: "1. Ihawin ang talong at liempo.\n2. Paghaluin ang lahat ng sangkap sa isang bowl.\n3. Timplahan ng suka at bagoong.", pairsWith: "Mainit na Kanin" },
+            { name: "Seafood Sinigang (Hipon/Salmon)", category: "Dinner", price: "Deluxe", type: "Sabaw", ingredients: "Hipon o Salmon Head, Sinigang Mix, Mustasa, Labanos", steps: "1. Pakuluin ang tubig na may rekado.\n2. Ilagay ang seafood (huwag i-overcook).\n3. Timplahan ng sinigang mix.", pairsWith: "Patis w/ Sili" },
+            { name: "Skinless Longganisa (Budget)", category: "Breakfast", price: "Budget", type: "Karne", ingredients: "Ground Pork, Asukal, Bawang, Toyo", steps: "1. Paghaluin ang lahat ng sangkap.\n2. I-roll sa maliliit na cylinders gamit ang wax paper.\n3. Iprito sa konting tubig at mantika.", pairsWith: "Sinangag" },
+            // NEW TIPID + KARNE + HAPUNAN (DINNER)
+            { name: "Pork Giniling (Basic)", category: "Dinner", price: "Budget", type: "Karne", ingredients: "Ground Pork, Patatas, Carrots, Toyo", steps: "1. Igisa ang bawang at sibuyas.\n2. Ihalo ang ground pork at lutuin hanggang mag-brown.\n3. Ilagay ang patatas at carrots cubes.\n4. Timplahan ng toyo at paminta. Simmer hanggang maluto ang gulay.", pairsWith: "Pritong Itlog" },
+            { name: "Adobong Atay ng Manok", category: "Dinner", price: "Budget", type: "Karne", ingredients: "Chicken Liver, Toyo, Suka, Bawang", steps: "1. Linisin ang atay ng manok.\n2. Igisa ang maraming bawang.\n3. Ihalo ang atay at lutuin nang mabilis.\n4. Ibuhos ang toyo at suka. Huwag haluin agad hanggang kumulo.", pairsWith: "Mainit na Kanin" },
+            { name: "Sizzling Hotdog w/ Sibuyas", category: "Dinner", price: "Budget", type: "Karne", ingredients: "Hotdog, Maraming Sibuyas, Ketchup", steps: "1. Hiwain ang hotdog sa maliliit na piraso.\n2. Igisa ang hotdog hanggang medyo tostado.\n3. Ihalo ang maraming hiniwang sibuyas.\n4. Lagyan ng ketchup at konting oyster sauce.", pairsWith: "Fried Rice" },
+            { name: "Pork Siomai (Home-style)", category: "Dinner", price: "Budget", type: "Karne", ingredients: "Ground Pork, Siomai Wrapper, Bawang", steps: "1. Timplahan ang ground pork ng asin at paminta.\n2. Balutin sa siomai wrapper.\n3. I-steam ng 15-20 minuto.\n4. Ihain kasama ang toyo at calamansi.", pairsWith: "Chili Garlic" },
+            { name: "Longganisa Gisa w/ Itlog", category: "Dinner", price: "Budget", type: "Karne", ingredients: "Longganisa, Itlog, Sibuyas", steps: "1. Iprito ang longganisa at hiwain sa maliliit na piraso.\n2. Igisa kasama ang sibuyas.\n3. Ihalo ang binating itlog at haluin hanggang maluto.", pairsWith: "Sinangag" },
+            { 
+                name: "Tortang Kalabasa", 
+                category: "Breakfast", 
+                price: "Budget", 
+                type: "Gulay", 
+                ingredients: "2 cups Grated Kalabasa, 2 Itlog, 1/4 cup Harina, Bawang, Sibuyas, Asin, Paminta", 
+                steps: "1. Pigain ang kinudkod na kalabasa para maalis ang sobrang tubig.\n2. Sa isang bowl, paghaluin ang kalabasa, itlog, harina, tinadtad na bawang at sibuyas.\n3. Timplahan ng asin at paminta.\n4. Kumuha ng 2 kutsarang mixture at i-flat sa mainit na kawali na may mantika.\n5. Iprito hanggang maging golden brown ang magkabilang panig.", 
+                pairsWith: "Sinangag at Ketchup" 
+            },
+            { 
+                name: "Ginisang Pechay w/ Itlog", 
+                category: "Breakfast", 
+                price: "Budget", 
+                type: "Gulay", 
+                ingredients: "2 bundles Pechay, 2 Itlog, Bawang, Sibuyas, Patis", 
+                steps: "1. Igisa ang bawang at sibuyas.\n2. Ilagay ang mga tangkay ng pechay, isunod ang mga dahon.\n3. Lagyan ng konting patis at haluin.\n4. Ibuhos ang binating itlog sa ibabaw at hayaang maluto bago haluin nang dahan-dahan.", 
+                pairsWith: "Pritong Tuyô" 
+            },
+            { 
+                name: "Pork Tocino (Homemade)", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Karne", 
+                ingredients: "1/2kg Pork Slices, 1/2 cup Sugar, 1 tbsp Salt, 2 tbsp Suka, Bawang, Anisado water (optional)", 
+                steps: "1. I-marinate ang baboy sa asukal, asin, suka, at bawang nang magdamag.\n2. Sa isang kawali, ilagay ang baboy kasama ang marinade at konting tubig.\n3. Pakuluin hanggang matuyo ang tubig at lumabas ang sariling mantika ng baboy.\n4. Iprito sa sariling mantika hanggang mag-caramelize.", 
+                pairsWith: "Sinangag at Itlog (Tocilog)" 
+            },
+            { 
+                name: "Vigan Longganisa Gisa", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Karne", 
+                ingredients: "6-8 pcs Vigan Longganisa, Bawang, Suka, Itlog", 
+                steps: "1. Ilagay ang longganisa sa kawali na may kalahating basong tubig.\n2. Pakuluin hanggang matuyo ang tubig at matusok ang balat para lumabas ang mantika.\n3. Iprito sa sariling mantika hanggang maging crispy.\n4. Pwedeng hiwain at igisa sa maraming bawang.", 
+                pairsWith: "Sinuwam na Kanin" 
+            },
+            { 
+                name: "Beef Tapa Tagalog", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Karne", 
+                ingredients: "1/2kg Beef Slices, 1/4 cup Toyo, 2 tbsp Calamansi, Maraming Bawang, Asukal, Paminta", 
+                steps: "1. I-marinate ang baka sa toyo, calamansi, bawang, asukal, at paminta ng 2-4 oras.\n2. Painitin ang kawali na may konting mantika.\n3. Iprito ang baka nang mabilis sa malakas na apoy hanggang maluto pero hindi matigas.", 
+                pairsWith: "Atchara at Sinangag" 
+            },
+            { 
+                name: "Vegetable Omelette", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "3 Itlog, Mushroom, Bell Pepper, Sibuyas, Spinach, Cheese", 
+                steps: "1. Igisa ang mushroom, bell pepper, at sibuyas hanggang lumambot.\n2. Ihalo ang spinach hanggang malanta.\n3. Batiin ang itlog at ibuhos sa kawali.\n4. Budburan ng cheese at itupi ang omelette kapag luto na ang ilalim.", 
+                pairsWith: "Toasted Bread" 
+            },
+            { 
+                name: "Ginisang Sayote w/ Egg", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "1 malaking Sayote, 2 Itlog, Bawang, Sibuyas, Kamatis", 
+                steps: "1. Igisa ang bawang, sibuyas, at kamatis.\n2. Ilagay ang hiniwang sayote at konting tubig. Takpan hanggang lumambot.\n3. Ibuhos ang binating itlog at haluin hanggang kumapit sa sayote.", 
+                pairsWith: "Pritong Daing" 
+            },
+            { 
+                name: "Ensaladang Talong w/ Itlog Maalat", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "2 Grilled Talong, 1 Itlog na Maalat, Kamatis, Sibuyas, Suka", 
+                steps: "1. Balatan ang inihaw na talong at hiwain.\n2. Hiwain ang itlog na maalat, kamatis, at sibuyas.\n3. Paghaluin ang lahat at timplahan ng konting suka at paminta.", 
+                pairsWith: "Fried Rice at Tinapa" 
+            },
+            { 
+                name: "Chicken Arroz Caldo", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Sabaw", 
+                ingredients: "1 cup Malagkit, Manok, Luya, Bawang, Kasubha, Patis", 
+                steps: "1. Igisa ang maraming luya at bawang.\n2. Ihalo ang manok at sangkutsahin.\n3. Ilagay ang malagkit na bigas at haluin.\n4. Lagyan ng tubig o chicken stock at pakuluin hanggang lumambot ang kanin.\n5. Timplahan ng patis at lagyan ng kasubha para sa kulay.", 
+                pairsWith: "Tokwa't Baboy" 
+            },
+            { 
+                name: "Beef Mami", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Sabaw", 
+                ingredients: "Egg Noodles, Beef Brisket, Cabbage, Spring Onion, Boiled Egg", 
+                steps: "1. Pakuluin ang baka hanggang lumambot nang husto. Itabi ang sabaw.\n2. I-blanch ang noodles at repolyo.\n3. Sa isang bowl, ilagay ang noodles, repolyo, at hiniwang baka.\n4. Ibuhos ang mainit na sabaw ng baka.\n5. Nilagyan ng nilagang itlog at spring onions sa ibabaw.", 
+                pairsWith: "Siopao" 
+            },
+            { 
+                name: "Pork Goto", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Sabaw", 
+                ingredients: "1 cup Bigas, Pork Tripe (Tuwalya), Luya, Bawang, Saffron, Calamansi", 
+                steps: "1. Linisin at pakuluin ang tuwalya hanggang lumambot. Hiwain sa strips.\n2. Igisa ang luya at bawang.\n3. Ihalo ang bigas at tuwalya.\n4. Lagyan ng tubig at pakuluin hanggang maging lugaw ang texture.\n5. Timplahan ng asin at patis.", 
+                pairsWith: "Pritong Lumpiang Togue" 
+            },
+            { 
+                name: "Boneless Bangus Prito", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Prito", 
+                ingredients: "1 Boneless Bangus, Bawang, Suka, Paminta, Asin", 
+                steps: "1. I-marinate ang bangus sa suka, bawang, at pampalasa ng 1 oras.\n2. Patuyuin nang kaunti bago iprito.\n3. Iprito sa mainit na mantika hanggang maging brown at crispy ang balat.", 
+                pairsWith: "Sinangag at Itlog" 
+            },
+            { 
+                name: "Corned Beef w/ Hashbrowns", 
+                category: "Breakfast", 
+                price: "Regular", 
+                type: "Prito", 
+                ingredients: "1 lata Corned Beef, 2 Patatas (kinudkod), Itlog, Harina", 
+                steps: "1. Gisa ang corned beef sa sibuyas at itabi.\n2. Paghaluin ang kinudkod na patatas, itlog, at konting harina.\n3. Iprito ang patatas mixture na parang patties (hashbrowns).\n4. Ihain ang corned beef sa ibabaw ng hashbrowns.", 
+                pairsWith: "Toasted Pandesal" 
+            },
+            { 
+                name: "Rib-eye Beef Tapa", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "300g Rib-eye Slices, Toyo, Calamansi, Garlic Confit, Pepper", 
+                steps: "1. I-marinate ang rib-eye sa premium toyo at calamansi.\n2. I-sear nang mabilis sa buttered pan para manatiling juicy.\n3. Budburan ng garlic confit (malambot na bawang) bago ihain.", 
+                pairsWith: "Garlic Rice w/ Truffle Oil" 
+            },
+            { 
+                name: "Premium Lucban Longganisa", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "Lucban Longganisa, Oregano, Bawang, Vinegar Dip", 
+                steps: "1. Pakuluin ang longganisa sa konting tubig.\n2. Pag natuyo, iprito sa sariling mantika hanggang maging malutong.\n3. Ihain kasama ang special spiced vinegar.", 
+                pairsWith: "Red Rice Sinangag" 
+            },
+            { 
+                name: "Crispy Bacon & Hungarian Sausage", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "Thick-cut Bacon, Hungarian Sausage, Butter, Eggs", 
+                steps: "1. I-bake o iprito ang bacon hanggang maging extra crispy.\n2. I-grill ang Hungarian sausage hanggang pumutok ang balat.\n3. Ihain kasama ang scrambled eggs na may cream.", 
+                pairsWith: "Pancakes o Waffles" 
+            },
+            { 
+                name: "Asparagus & Mushroom Frittata", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Asparagus, Shiitake Mushrooms, 4 Itlog, Parmesan Cheese, Heavy Cream", 
+                steps: "1. Igisa ang asparagus at mushrooms sa butter.\n2. Batiin ang itlog kasama ang cream at parmesan.\n3. Ibuhos sa kawali at hayaang maluto ang ilalim.\n4. I-finish sa oven o takpan hanggang maluto ang taas.", 
+                pairsWith: "Fresh Salad" 
+            },
+            { 
+                name: "Avocado Toast w/ Poached Egg", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Avocado, Sourdough, Itlog, Chili Flakes, Calamansi", 
+                steps: "1. I-toast ang sourdough bread.\n2. I-mash ang avocado at timplahan ng calamansi at asin.\n3. Mag-poach ng itlog (ilaga sa tubig na may suka nang walang balat).\n4. Ipatong ang avocado at itlog sa bread.", 
+                pairsWith: "Brewed Coffee" 
+            },
+            { 
+                name: "Spinach & Ricotta Scramble", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Spinach, Ricotta Cheese, 3 Itlog, Bawang, Butter", 
+                steps: "1. Igisa ang spinach sa butter hanggang malanta.\n2. Ibuhos ang binating itlog.\n3. Bago maluto nang husto, i-dollop ang ricotta cheese at dahan-dahang haluin.", 
+                pairsWith: "Whole Wheat Toast" 
+            },
+            { 
+                name: "Seafood Lomi Special", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Lomi Noodles, Shrimp, Squid, Quail Eggs, Chicharon, Cassava Starch", 
+                steps: "1. Igisa ang bawang at sibuyas, isunod ang hipon at squid.\n2. Maglagay ng stock at pakuluin ang noodles.\n3. Lagyan ng cassava starch solution para maging malapot ang sabaw.\n4. Ibuhos ang binating itlog habang hinahalo.\n5. I-top ng maraming chicharon at quail eggs.", 
+                pairsWith: "Calamansi at Sili" 
+            },
+            { 
+                name: "Special La Paz Batchoy", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Miki Noodles, Pork Meat, Liver, Guapple/Pork Stock, Chicharon bits", 
+                steps: "1. Pakuluin ang buto-buto ng baboy para sa malinamnam na stock.\n2. I-prepare ang noodles sa bowl kasama ang hiniwang karne at atay.\n3. Ibuhos ang napakainit na stock.\n4. Budburan ng maraming toasted garlic at chicharon.", 
+                pairsWith: "Puto" 
+            },
+            { 
+                name: "Creamy Seafood Chowder", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Shrimp, Clams, Potato, Corn, All-purpose Cream, Butter", 
+                steps: "1. Igisa ang patatas at mais sa butter.\n2. Ilagay ang clams at hipon.\\n3. Ibuhos ang cream at konting stock. Pakuluin sa mahinang apoy.\\n4. Timplahan ng asin at maraming paminta.", 
+                pairsWith: "Garlic Bread" 
+            },
+            { 
+                name: "Smoked Salmon & Scrambled Eggs", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Smoked Salmon, 3 Itlog, Cream, Chives, Capers", 
+                steps: "1. Batiin ang itlog kasama ang konting cream.\n2. Lutuin ang itlog sa low heat hanggang maging soft-scrambled.\n3. I-top ng smoked salmon slices, chives, at capers.", 
+                pairsWith: "Bagel o Toasted Bread" 
+            },
+            { 
+                name: "Wagyu Beef Breakfast Sliders", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Wagyu Beef Patties, Quail Eggs, Cheese, Mini Buns", 
+                steps: "1. Iprito ang wagyu patties.\n2. I-toast ang mini buns.\n3. Magluto ng sunny-side up quail eggs.\n4. I-assemble ang sliders na may cheese.", 
+                pairsWith: "Potato Wedges" 
+            },
+            { 
+                name: "Crispy Danggit & Pusit Platter", 
+                category: "Breakfast", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Danggit, Dried Pusit, Itlog na Maalat, Kamatis, Suka Dip", 
+                steps: "1. Iprito ang danggit at pusit hanggang maging super crispy.\n2. Ihain sa malaking platter kasama ang hiniwang itlog na maalat at kamatis.\n3. Gumawa ng dip na may suka, bawang, at sili.", 
+                pairsWith: "Sinangag" 
+            },
+            { 
+                name: "Pork Giniling w/ Quail Eggs", 
+                category: "Lunch", 
+                price: "Budget", 
+                type: "Karne", 
+                ingredients: "1/4kg Ground Pork, Quail Eggs, Patatas, Carrots, Toyo", 
+                steps: "1. Igisa ang bawang at sibuyas.\n2. Ihalo ang giniling at lutuin hanggang mag-brown.\n3. Ilagay ang patatas at carrots.\n4. Timplahan ng toyo at pakuluin hanggang maluto ang gulay.\n5. Ihalo ang nilagang quail eggs bago hanguin.", 
+                pairsWith: "Mainit na Kanin" 
+            },
+            { 
+                name: "Fried Eggplant w/ Bagoong Dip", 
+                category: "Lunch", 
+                price: "Budget", 
+                type: "Prito", 
+                ingredients: "Talong, Bagoong Alamang, Calamansi, Mantika", 
+                steps: "1. Hiwain ang talong at iprito hanggang lumambot.\n2. Igisa ang bagoong sa bawang at kamatis.\n3. Ihain ang talong kasama ang bagoong na may piga ng calamansi.", 
+                pairsWith: "Pritong Isda" 
+            },
+            { 
+                name: "Ginisang Buncis w/ Hipon", 
+                category: "Lunch", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "Buncis (Green beans), Hipon, Bawang, Sibuyas, Oyster Sauce", 
+                steps: "1. Igisa ang bawang at sibuyas.\n2. Ihalo ang hipon at lutuin hanggang mag-orange.\n3. Ilagay ang buncis at oyster sauce.\n4. Lutuin nang mabilis para manatiling reny ang gulay.", 
+                pairsWith: "Fried Chicken" 
+            },
+            { 
+                name: "Sinigang na Bangus sa Miso", 
+                category: "Lunch", 
+                price: "Regular", 
+                type: "Sabaw", 
+                ingredients: "Bangus, Miso Paste, Mustasa, Labanos, Kamatis, Sinigang Mix", 
+                steps: "1. Igisa ang miso paste sa bawang at sibuyas.\n2. Lagyan ng tubig at pakuluin kasama ang kamatis at labanos.\n3. Ilagay ang bangus at sinigang mix.\n4. Huling ilagay ang mustasa.", 
+                pairsWith: "Patis at Sili" 
+            },
+            { 
+                name: "Beef Mechado", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "Beef Brisket, Tomato Sauce, Patatas, Bell Pepper, Laurel", 
+                steps: "1. Pakuluin ang baka hanggang lumambot.\n2. Igisa ang bawang at sibuyas, isunod ang baka.\n3. Ibuhos ang tomato sauce at konting stock.\n4. Ilagay ang patatas at bell pepper. Simmer hanggang lumapot.", 
+                pairsWith: "Steamed Rice" 
+            },
+            { 
+                name: "Pork Pata Humba", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "Pork Pata, Black Beans (Tausi), Banana Blossoms, Toyo, Suka, Asukal", 
+                steps: "1. Pakuluin ang pata hanggang lumambot.\n2. Igisa sa toyo, suka, at maraming asukal para maging matamis-tamis.\n3. Ihalo ang tausi at bulaklak ng saging.\n4. Lutuin hanggang mag-stick ang sauce sa karne.", 
+                pairsWith: "Hard-boiled Egg" 
+            },
+            { 
+                name: "Sinigang na Sugpo", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Sugpo (Large Prawns), Sinigang Mix, Sitaw, Talong, Kangkong, Sili", 
+                steps: "1. Pakuluin ang tubig na may kamatis at sibuyas.\n2. Ilagay ang mga gulay at sinigang mix.\n3. Huling ilagay ang sugpo. Lutuin ng 3-5 minuto lang para hindi tumigas ang laman.", 
+                pairsWith: "Mainit na Kanin" 
+            },
+            { 
+                name: "Sinigang na Salmon Belly", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Salmon Belly, Miso, Mustasa, Labanos, Kamatis", 
+                steps: "1. Pakuluin ang tubig na may miso, kamatis, at labanos.\n2. Ilagay ang salmon belly at sinigang mix.\n3. Lutuin nang sandali (delikado ang salmon sa overcooking).\n4. Ilagay ang mustasa bago patayin ang apoy.", 
+                pairsWith: "Calamansi Dip" 
+            },
+            { 
+                name: "Seafood Kare-Kare Platter", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Sabaw", 
+                ingredients: "Hipon, Squid, Tahong, Peanut Sauce, Gulay ng Kare-Kare", 
+                steps: "1. Lutuin ang peanut sauce (peanut butter, stock, atsuete).\n2. I-steam o i-blanch ang seafood nang hiwalay.\n3. Ipaghalo ang seafood at sauce bago ihain para hindi ma-overcook ang seafood.", 
+                pairsWith: "Bagoong Alamang" 
+            },
+            { 
+                name: "Crispy Pompano w/ Garlic", 
+                category: "Lunch", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Large Pompano Fish, Maraming Bawang, Ginger, Flour", 
+                steps: "1. Lagyan ng hiwa ang isda at budburan ng asin at harina.\n2. I-deep fry hanggang maging super crispy.\n3. I-top ng napakaraming toasted garlic.", 
+                pairsWith: "Ensaladang Mangga" 
+            },
+            { 
+                name: "Ginisang Kangkong w/ Oyster Sauce", 
+                category: "Dinner", 
+                price: "Budget", 
+                type: "Gulay", 
+                ingredients: "Kangkong, Bawang, Oyster Sauce, Chili Flakes", 
+                steps: "1. Igisa ang maraming bawang.\n2. Ilagay ang kangkong (tangkay muna bago dahon).\n3. Ibuhos ang oyster sauce at chili flakes.\n4. Mabilisang haluin sa malakas na apoy.", 
+                pairsWith: "Pritong Isda" 
+            },
+            { 
+                name: "Fried Lumpiang Togue", 
+                category: "Dinner", 
+                price: "Budget", 
+                type: "Prito", 
+                ingredients: "Togue, Carrots, Lumpia Wrapper, Vinegar Dip", 
+                steps: "1. Igisa ang togue at carrots nang mabilis.\n2. Palamigin at balutin sa wrapper.\n3. Iprito hanggang maging golden brown.", 
+                pairsWith: "Spiced Vinegar" 
+            },
+            { 
+                name: "Adobong Kangkong w/ Pork Bits", 
+                category: "Dinner", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "Kangkong, Pork Belly (maliliit), Toyo, Suka, Bawang", 
+                steps: "1. I-render ang mantika ng baboy sa kawali hanggang maging crispy.\n2. Igisa ang bawang sa parehong kawali.\n3. Ihalo ang kangkong, toyo, at suka.\n4. Pakuluin nang hindi hinahalo sa simula.", 
+                pairsWith: "Fried Chicken" 
+            },
+            { 
+                name: "Pinakbet Tagalog w/ Pork", 
+                category: "Dinner", 
+                price: "Regular", 
+                type: "Gulay", 
+                ingredients: "Kalabasa, Sitaw, Talong, Okra, Baboy, Bagoong Alamang", 
+                steps: "1. Igisa ang baboy hanggang mag-brown.\n2. Ihalo ang bagoong, bawang, sibuyas, at kamatis.\n3. Ilagay ang kalabasa at konting tubig.\n4. Isunod ang ibang gulay at lutuin hanggang malambot.", 
+                pairsWith: "Pritong Isda" 
+            },
+            { 
+                name: "Breaded Pork Chop", 
+                category: "Dinner", 
+                price: "Regular", 
+                type: "Prito", 
+                ingredients: "Pork Chop, Breadcrumbs, Itlog, Flour, Calamansi", 
+                steps: "1. Timplahan ang pork chop ng calamansi, asin, at paminta.\n2. I-dredge sa flour, isawsaw sa itlog, at balutin sa breadcrumbs.\n3. Iprito hanggang maging golden brown.", 
+                pairsWith: "Gravy o Ketchup" 
+            },
+            { 
+                name: "Fish Fillet w/ Tartar Sauce", 
+                category: "Dinner", 
+                price: "Regular", 
+                type: "Prito", 
+                ingredients: "Cream Dory, Flour, Egg, Mayo, Pickles", 
+                steps: "1. Hiwain ang fish fillet at timplahan.\n2. I-batter at iprito hanggang maging crispy.\n3. Gumawa ng sauce: Mayo, tinadtad na pickles, at sibuyas.", 
+                pairsWith: "Coleslaw" 
+            },
+            { 
+                name: "Premium Beef Steak Tagalog", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Karne", 
+                ingredients: "Beef Sirloin (Thin slices), Toyo, Calamansi, Red Onion Rings, Garlic", 
+                steps: "1. I-marinate ang beef sa toyo at calamansi ng 1 oras.\n2. Iprito ang baka nang mabilis at itabi.\n3. Igisa ang maraming onion rings sa parehong kawali.\n4. Ibalik ang baka at ibuhos ang marinade. Simmer ng 1 minuto.", 
+                pairsWith: "Garlic Rice" 
+            },
+            { 
+                name: "Stir-fry Broccoli w/ Scallops", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Broccoli, Scallops, Oyster Sauce, Bawang, Butter", 
+                steps: "1. I-sear ang scallops sa butter at itabi.\n2. Igisa ang broccoli sa bawang at oyster sauce.\n3. Ibalik ang scallops at haluin nang dahan-dahan.", 
+                pairsWith: "Yang Chow Fried Rice" 
+            },
+            { 
+                name: "Baked Eggplant w/ Mozzarella", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Talong, Tomato Sauce, Mozzarella Cheese, Basil", 
+                steps: "1. Iprito nang kaunti ang sliced talong.\n2. I-layer sa baking dish: Talong, tomato sauce, at cheese.\n3. I-bake hanggang matunaw at mag-brown ang cheese.", 
+                pairsWith: "Toasted Bread" 
+            },
+            { 
+                name: "Chopsuey Special w/ Shrimp", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Gulay", 
+                ingredients: "Mixed Veggies, Shrimp, Quail Eggs, Chicken Liver, Oyster Sauce", 
+                steps: "1. Igisa ang liver at hipon.\n2. Ihalo ang lahat ng gulay (repolyo, carrots, cauliflower, atbp).\n3. Lagyan ng oyster sauce at cornstarch para sa lapot.\n4. Ihalo ang quail eggs bago ihain.", 
+                pairsWith: "Fried Chicken" 
+            },
+            { 
+                name: "Baked Tahong w/ Cheese", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Tahong (Mussels), Cheese, Garlic, Butter", 
+                steps: "1. I-steam ang tahong para bumukas.\n2. Alisin ang kalahating shell.\n3. Lagyan ng butter, tinadtad na bawang, at maraming cheese.\n4. I-bake o i-oven toaster hanggang matunaw ang cheese.", 
+                pairsWith: "White Wine (optional)" 
+            },
+            { 
+                name: "Crispy Pata Deluxe", 
+                category: "Dinner", 
+                price: "Deluxe", 
+                type: "Prito", 
+                ingredients: "Pork Knuckle, Star Anise, Laurel, Peppercorn, Salt", 
+                steps: "1. Pakuluin ang pata sa maraming spices hanggang maging super tender.\n2. Patuyuin ang balat nang husto (air dry).\n3. I-deep fry sa napakainit na mantika hanggang pumutok ang balat at maging crispy.", 
+                pairsWith: "Soy-Vinegar Dip w/ Sibuyas" 
+            }
         ];
 
         // Persistence Logic
@@ -777,12 +1239,26 @@
         }
         function deleteRecipe(index) { if (confirm(`Delete?`)) { recipes.splice(index, 1); localStorage.setItem('myRecipes', JSON.stringify(recipes)); renderRecipeList(); } }
         function editRecipe(index) {
-            const r = recipes[index]; document.getElementById('form-name').value = r.name; document.getElementById('form-category').value = r.category;
-            document.getElementById('form-ingredients').value = r.ingredients; document.getElementById('form-steps').value = r.steps;
-            document.getElementById('form-link').value = r.link || ""; document.getElementById('edit-index').value = index;
-            document.getElementById('save-btn').innerText = "UPDATE RECIPE"; openModal('add-modal');
+            const r = recipes[index]; 
+            document.getElementById('form-name').value = r.name; 
+            document.getElementById('form-category').value = r.category;
+            document.getElementById('form-price').value = r.price || "Regular";
+            document.getElementById('form-type').value = r.type || "Karne";
+            document.getElementById('form-ingredients').value = r.ingredients; 
+            document.getElementById('form-steps').value = r.steps;
+            document.getElementById('form-link').value = r.link || ""; 
+            document.getElementById('edit-index').value = index;
+            document.getElementById('save-btn').innerText = "UPDATE RECIPE"; 
+            openModal('add-modal');
         }
-        function cancelEdit() { document.getElementById('recipe-form').reset(); document.getElementById('magic-paste').value = ""; document.getElementById('edit-index').value = "-1"; document.getElementById('save-btn').innerText = "SAVE RECIPE"; }
+        function cancelEdit() { 
+            document.getElementById('recipe-form').reset(); 
+            document.getElementById('magic-paste').value = ""; 
+            document.getElementById('edit-index').value = "-1"; 
+            document.getElementById('form-price').value = "Regular";
+            document.getElementById('form-type').value = "Karne";
+            document.getElementById('save-btn').innerText = "SAVE RECIPE"; 
+        }
         function resetRecipes() { if(confirm("Reset recipes?")) { localStorage.removeItem('myRecipes'); location.reload(); } }
 
         document.getElementById('recipe-form').addEventListener('submit', (e) => {
@@ -791,14 +1267,16 @@
             const data = { 
                 name: document.getElementById('form-name').value, 
                 category: document.getElementById('form-category').value, 
+                price: document.getElementById('form-price').value,
+                type: document.getElementById('form-type').value,
                 ingredients: document.getElementById('form-ingredients').value, 
                 steps: document.getElementById('form-steps').value, 
-                link: document.getElementById('form-link').value,
-                price: recipes[editIndex]?.price || 'Regular',
-                type: recipes[editIndex]?.type || 'Karne'
+                link: document.getElementById('form-link').value
             };
             if (editIndex === -1) recipes.push(data); else recipes[editIndex] = data;
-            localStorage.setItem('myRecipes', JSON.stringify(recipes)); closeModal();
+            localStorage.setItem('myRecipes', JSON.stringify(recipes)); 
+            closeModal();
+            renderRecipeList();
         });
 
         updateFavUI(); renderChips();
